@@ -21,7 +21,7 @@
 
   <style>
     body { margin: 0; font-family: system-ui, -apple-system, sans-serif; background-color: #f3f4f6; color: #1f2937; }
-    /* 預先撐開高度，避免 CLS */
+    /* 預先定義高度，避免畫面跳動 */
     .hero-section { position: relative; height: 400px; background-color: #111827; overflow: hidden; display: flex; align-items: center; justify-content: center; text-align: center; color: white; }
     .hero-img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0.7; }
     .nav-sticky { position: sticky; top: 0; z-index: 40; background: white; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); height: 80px; }
@@ -29,14 +29,14 @@
     .logo-breathe { animation: breathe 2s infinite ease-in-out; }
     @keyframes breathe { 0% { transform: scale(1); opacity: 0.8; } 50% { transform: scale(1.1); opacity: 1; } 100% { transform: scale(1); opacity: 0.8; } }
     
-    /* 隱藏未編譯的 Vue 模板 */
-    [v-cloak] { display: none; }
-    
     /* FAQ 動畫 */
     .faq-answer { max-height: 0; overflow: hidden; transition: max-height 0.3s ease-out; }
     .faq-item.active .faq-answer { max-height: 500px; padding-bottom: 16px; }
     .faq-icon { transition: transform 0.3s; }
     .faq-item.active .faq-icon { transform: rotate(180deg); }
+    
+    /* 隱藏未編譯的 Vue */
+    [v-cloak] { display: none; }
   </style>
 
   <script src="https://cdn.tailwindcss.com"></script>
@@ -47,12 +47,12 @@
 
 <body class="locked">
 
-  <div id="loading-mask" class="fixed inset-0 bg-white z-[9999] flex items-center justify-center transition-opacity duration-500">
+  <div id="loading-mask" class="fixed inset-0 bg-white z-[9999] flex items-center justify-center transition-opacity duration-500" style="opacity: 1;">
       <div class="text-center">
           <img src="https://wsrv.nl/?url=https://drive.google.com/uc?id=16UrCpYWRkyEkvL7M73o0DIAvkKWtF0Lp&w=150&output=webp&q=60" 
                class="w-20 h-20 rounded-xl mb-4 mx-auto logo-breathe shadow-xl" 
                alt="巧品珠寶 Loading" width="80" height="80">
-          <p class="text-gray-500 text-sm font-bold tracking-widest">巧品珠寶·正在為您搜尋最即時優勢的金價</p>
+          <p class="text-gray-500 text-sm font-bold tracking-widest">資料更新中...</p>
       </div>
   </div>
 
@@ -282,8 +282,8 @@
   <script>
     const { createApp } = Vue;
     const GAS_API_URL = 'https://script.google.com/macros/s/AKfycbygJxxjK_2wd3hUB-M0XjU3SxusAWPpW99EPPqBIJjMrLWItT-4LHxSzYFatLQ-RvC9Qg/exec';
-
-    // ★★★ 本地快取邏輯：讓網頁第一次載入後，下次秒開 ★★★
+    
+    // ★★★ 本地快取邏輯 ★★★
     const CACHE_KEY = 'gold_price_cache';
     const CACHE_DURATION = 1000 * 60 * 30; // 30 分鐘快取
 
@@ -293,16 +293,25 @@
           view: 'home', 
           currentArticle: null,
           currentImgLoaded: false, 
-          // ★★★ 預先填入第一張大圖的 Drive ID，不用等 API (這是目前第一張圖的 ID) ★★★
+          
+          // ★★★ 1. 預填資料：讓網頁一打開就有內容，不用等 Google ★★★
+          // 這些資料是「靜態」的，當 API 載入完成後會被最新的覆蓋
+          updateTime: '最新即時報價', 
           heroImages: ['https://drive.google.com/thumbnail?id=1ASz1v5ZBQ-WV572r-BC4gZRuraywgKKv'], 
-          currentHeroIndex: 0, updateTime: '載入中...', unit: 'qian', loading: false,
+          rates: { 
+              '24K': {buy: 16141, sell: 16571, buyDiff: 0, sellDiff: 0}, 
+              '18K': {buy: 12105, sell: 0}, 
+              'Pt': {buy: 6311, sell: 7291, buyDiff: 0, sellDiff: 0}, 
+              'Ag': {buy999: 57717, sell999: 69539} 
+          },
+          
+          currentHeroIndex: 0, unit: 'qian', loading: false,
           calcUnit: 'qian', calcMetal: '24K', calcWeight: '',
-          rates: { '24K': {buy:0, sell:0}, '18K': {buy:0}, 'Pt': {buy:0}, 'Pd': {buy:0}, '22K': {buy:0}, 'Ag': {buy999:0} },
           dailyData: [], rawChartData: [], chartLabels: [], chartInstance: null,
           articles: [], faqList: [],
           visibleCount: 4, 
           visibleQuoteCount: 20,
-          canClick: false
+          canClick: true // 先允許點擊，因為有資料了
         }
       },
       computed: {
@@ -388,57 +397,55 @@
         },
         unlockBody() {
             window.scrollTo(0, 0); document.body.classList.remove('locked');
-            const mask = document.getElementById('loading-mask'); if(mask) mask.classList.add('fade-out');
-            setTimeout(() => { if(mask) mask.style.display = 'none'; }, 600); setTimeout(() => { this.canClick = true; }, 1000);
+            // 因為有預填資料，直接隱藏 Loading Mask
+            const mask = document.getElementById('loading-mask'); if(mask) mask.style.display = 'none';
+            setTimeout(() => { this.canClick = true; }, 100);
         },
         updateChartOnUnitChange() { if(this.rawChartData && this.rawChartData.length > 0 && this.view === 'home') { this.initChart(this.chartLabels, this.rawChartData); } },
         
         async fetchData() {
-            // ★★★ 優先從快取讀取，實現秒開 ★★★
+            // ★★★ 快取邏輯：即使有預填資料，還是先檢查快取，因為快取可能比預填資料更新 ★★★
             const cached = localStorage.getItem(CACHE_KEY);
             if (cached) {
                 const { data, timestamp } = JSON.parse(cached);
                 if (Date.now() - timestamp < CACHE_DURATION) {
                     this.applyData(data);
-                    // 即使有快取，我們也可以在背景默默更新 (Optional: 如果需要即時性高)
-                    // 但為了省流量，這裡設定如果快取有效就不發請求
                     this.unlockBody();
                     return; 
                 }
             }
 
+            // ★★★ 無快取時，先顯示預填資料，背景再偷偷去抓新的 ★★★
+            this.unlockBody();
+
             try {
-                // 1. Init Data
                 const initRes = await fetch(GAS_API_URL + '?action=getInitData');
                 const initData = await initRes.json();
                 
-                // 2. Chart & Table
                 this.loading = true;
                 const chartRes = await fetch(GAS_API_URL + '?action=getChartData');
                 const chartData = await chartRes.json();
                 
-                // 3. Articles
                 const articleRes = await fetch(GAS_API_URL + '?action=getArticles');
                 const articleList = await articleRes.json();
 
                 const fullData = { initData, chartData, articleList };
                 
-                // 儲存到快取
+                // 存入快取
                 localStorage.setItem(CACHE_KEY, JSON.stringify({
                     timestamp: Date.now(),
                     data: fullData
                 }));
 
+                // 更新畫面
                 this.applyData(fullData);
-                this.unlockBody();
 
-            } catch(e) { console.error("Fetch Error:", e); this.unlockBody(); }
+            } catch(e) { console.error("Fetch Error:", e); }
         },
 
         applyData(allData) {
             const { initData, chartData, articleList } = allData;
             
-            // Apply Init
             if(initData.rates) {
                 this.rates = initData.rates.rates;
                 this.updateTime = initData.rates.updatedAt;
@@ -449,7 +456,6 @@
             }
             if(initData.faq) this.faqList = initData.faq;
 
-            // Apply Chart
             this.loading = false;
             if(chartData.dailyTable) this.dailyData = chartData.dailyTable;
             if(chartData.chart) { 
@@ -458,7 +464,6 @@
                 if(this.view === 'home') this.$nextTick(() => this.initChart(this.chartLabels, this.rawChartData));
             }
 
-            // Apply Articles
             this.articles = (articleList || []).map(a => ({ 
                 ...a, 
                 image: this.getOptimizedUrl(a.image, 600),
@@ -477,4 +482,3 @@
   </script>
 </body>
 </html>
-
