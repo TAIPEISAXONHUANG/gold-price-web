@@ -21,17 +21,19 @@
 
   <style>
     body { margin: 0; font-family: system-ui, -apple-system, sans-serif; background-color: #f3f4f6; color: #1f2937; }
+    /* 強制 Hero 區域高度，防止 CLS */
     .hero-section { position: relative; height: 400px; background-color: #111827; overflow: hidden; display: flex; align-items: center; justify-content: center; text-align: center; color: white; }
     .hero-img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0.7; }
-    /* Nav 高度稍微增加以容納兩行資訊，避免擁擠 */
     .nav-sticky { position: sticky; top: 0; z-index: 40; background: white; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); height: 84px; }
-    .logo-breathe { animation: breathe 2s infinite ease-in-out; }
-    @keyframes breathe { 0% { transform: scale(1); opacity: 0.8; } 50% { transform: scale(1.1); opacity: 1; } 100% { transform: scale(1); opacity: 0.8; } }
     [v-cloak] { display: none; }
     .faq-answer { max-height: 0; overflow: hidden; transition: max-height 0.3s ease-out; }
     .faq-item.active .faq-answer { max-height: 500px; padding-bottom: 16px; }
     .faq-icon { transition: transform 0.3s; }
     .faq-item.active .faq-icon { transform: rotate(180deg); }
+    /* Loading Mask */
+    .loading-mask { position: fixed; inset: 0; background: white; z-index: 9999; display: flex; align-items: center; justify-content: center; transition: opacity 0.5s; }
+    .logo-breathe { animation: breathe 2s infinite ease-in-out; }
+    @keyframes breathe { 0% { transform: scale(1); opacity: 0.8; } 50% { transform: scale(1.1); opacity: 1; } 100% { transform: scale(1); opacity: 0.8; } }
   </style>
 
   <script src="https://cdn.tailwindcss.com"></script>
@@ -41,7 +43,7 @@
 
 <body class="locked pb-20 lg:pb-0">
 
-  <div id="loading-mask" class="fixed inset-0 bg-white z-[9999] flex items-center justify-center transition-opacity duration-500">
+  <div id="loading-mask" class="loading-mask">
       <div class="text-center">
           <img src="https://wsrv.nl/?url=https://drive.google.com/uc?id=16UrCpYWRkyEkvL7M73o0DIAvkKWtF0Lp&w=150&output=webp&q=60" 
                class="w-20 h-20 rounded-xl mb-4 mx-auto logo-breathe shadow-xl" 
@@ -59,25 +61,21 @@
                 w-10 h-10 rounded-full lg:w-12 lg:h-12 lg:rounded-l-lg lg:rounded-r-none lg:hover:w-14" aria-label="Line">
          <i class="fab fa-line text-xl lg:text-2xl"></i>
       </a>
-      
       <a href="https://www.facebook.com/QPJEWELRY.OFFICIAL" target="_blank" 
          class="flex items-center justify-center text-white shadow-md bg-[#1877F2] transition-all 
                 w-10 h-10 rounded-full lg:w-12 lg:h-12 lg:rounded-l-lg lg:rounded-r-none lg:hover:w-14" aria-label="Facebook">
          <i class="fab fa-facebook-f text-lg lg:text-xl"></i>
       </a>
-      
       <a href="https://www.instagram.com/qiaopin.jewelry/" target="_blank" 
          class="flex items-center justify-center text-white shadow-md bg-gradient-to-tr from-yellow-400 via-red-500 to-purple-500 transition-all 
                 w-10 h-10 rounded-full lg:w-12 lg:h-12 lg:rounded-l-lg lg:rounded-r-none lg:hover:w-14" aria-label="Instagram">
          <i class="fab fa-instagram text-xl lg:text-2xl"></i>
       </a>
-      
       <a href="https://www.tiktok.com/@qpdiamond666" target="_blank" 
          class="flex items-center justify-center text-white shadow-md bg-black transition-all 
                 w-10 h-10 rounded-full lg:w-12 lg:h-12 lg:rounded-l-lg lg:rounded-r-none lg:hover:w-14" aria-label="TikTok">
          <i class="fab fa-tiktok text-lg lg:text-xl"></i>
       </a>
-      
       <button onclick="window.scrollTo({top: 0, behavior: 'smooth'})" 
               class="flex items-center justify-center text-white shadow-md bg-yellow-500 border border-yellow-600 transition-all 
                      w-10 h-10 rounded-full lg:w-12 lg:h-12 lg:rounded-l-lg lg:rounded-r-none lg:hover:w-14" aria-label="Top">
@@ -105,7 +103,7 @@
               </a>
               <a href="https://maps.google.com/?q=台北市大安區濟南路三段62-1號1樓" target="_blank" class="flex items-center gap-1 text-gray-500 hover:text-red-800 transition text-[10px] md:text-xs">
                   <i class="fas fa-map-marker-alt text-red-600"></i>
-                  <span>台北市大安區濟南路三段62-1號</span>
+                  <span>大安區濟南路三段62-1號</span>
               </a>
           </div>
         </div>
@@ -118,16 +116,16 @@
 
     <div v-show="view === 'home'">
       <header class="hero-section">
-        <transition name="fade">
-           <img v-if="currentHeroUrl" 
-                :src="currentHeroUrl"
+           <img src="https://wsrv.nl/?url=https://drive.google.com/uc?id=1ASz1v5ZBQ-WV572r-BC4gZRuraywgKKv&w=600&output=webp&q=75"
+                srcset="https://wsrv.nl/?url=https://drive.google.com/uc?id=1ASz1v5ZBQ-WV572r-BC4gZRuraywgKKv&w=450&output=webp&q=65 450w, 
+                        https://wsrv.nl/?url=https://drive.google.com/uc?id=1ASz1v5ZBQ-WV572r-BC4gZRuraywgKKv&w=1200&output=webp&q=75 1200w"
+                sizes="(max-width: 600px) 100vw, 1200px"
                 class="hero-img"
-                @error="handleImgError" 
                 alt="今日金價 Banner" 
-                width="1200" height="400"
                 fetchpriority="high">
-        </transition>
-        <div v-if="!currentHeroUrl" class="absolute inset-0 bg-gradient-to-r from-gray-900 to-red-900 opacity-90"></div>
+                
+        <div class="absolute inset-0 bg-gradient-to-r from-gray-900 to-red-900 opacity-90 mix-blend-multiply"></div>
+        
         <div class="relative z-10 text-center text-white px-4 max-w-4xl">
           <div class="inline-block px-4 py-1 border-2 border-yellow-400 bg-yellow-900/80 rounded-full text-yellow-300 text-sm font-bold mb-6 backdrop-blur-md text-super-pop shadow-lg">經營十餘年 · 誠信老字號</div>
           <h1 class="text-4xl md:text-6xl font-black mb-6 leading-tight text-super-pop">黃金回收 <span class="text-amber-400">價值最大化</span></h1>
@@ -366,7 +364,6 @@
 
   <script>
     const { createApp } = Vue;
-    // ★★★ 務必替換為您的 GAS 部署網址 ★★★
     const GAS_API_URL = 'https://script.google.com/macros/s/AKfycbygJxxjK_2wd3hUB-M0XjU3SxusAWPpW99EPPqBIJjMrLWItT-4LHxSzYFatLQ-RvC9Qg/exec';
     
     const CACHE_KEY = 'gold_price_cache';
@@ -378,8 +375,8 @@
           view: 'home', 
           currentArticle: null,
           currentImgLoaded: false, 
-          // 資料預設值
-          heroImages: ['https://wsrv.nl/?url=https://drive.google.com/uc?id=1ASz1v5ZBQ-WV572r-BC4gZRuraywgKKv&w=1200&output=webp&q=75'], 
+          // 資料預設值 (Hardcoded for LCP)
+          heroImages: [], 
           updateTime: '最新即時報價', 
           rates: { '24K': {buy: 16141, sell: 16571, buyDiff: 0, sellDiff: 0}, '18K': {buy: 12105, sell: 0}, 'Pt': {buy: 6311, sell: 7291}, 'Ag': {buy999: 57717, sell999: 69539} },
           currentHeroIndex: 0, unit: 'qian', loading: false,
@@ -392,13 +389,6 @@
       computed: {
         unitText() { return this.unit === 'qian' ? '台錢' : '公克'; },
         silverUnitText() { return this.unit === 'qian' ? '公斤' : '公克'; },
-        // Banner 圖片連結
-        currentHeroUrl() {
-            if(!this.heroImages || this.heroImages.length === 0) return '';
-            const url = this.heroImages[this.currentHeroIndex];
-            if(url.includes('wsrv.nl')) return url;
-            return this.getOptimizedUrl(url, 1200);
-        },
         calculateTotal() {
           if(!this.calcWeight) return 0;
           let rawPrice = 0;
@@ -429,7 +419,6 @@
              this.$nextTick(() => { const el = document.getElementById(id); if(el) el.scrollIntoView({ behavior: 'smooth' }); });
           } else { const el = document.getElementById(id); if(el) el.scrollIntoView({ behavior: 'smooth' }); }
         },
-        // 智慧捲動
         scrollToRates() {
            const targetId = window.innerWidth < 1024 ? 'rates-mobile' : 'rates-desktop';
            this.scrollTo(targetId);
@@ -564,4 +553,3 @@
   </script>
 </body>
 </html>
-
