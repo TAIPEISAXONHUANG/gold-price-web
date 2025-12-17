@@ -21,38 +21,33 @@
 
   <style>
     body { margin: 0; font-family: system-ui, -apple-system, sans-serif; background-color: #f3f4f6; color: #1f2937; }
-    /* 預先定義高度，避免畫面跳動 */
     .hero-section { position: relative; height: 400px; background-color: #111827; overflow: hidden; display: flex; align-items: center; justify-content: center; text-align: center; color: white; }
     .hero-img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0.7; }
     .nav-sticky { position: sticky; top: 0; z-index: 40; background: white; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); height: 80px; }
-    
     .logo-breathe { animation: breathe 2s infinite ease-in-out; }
     @keyframes breathe { 0% { transform: scale(1); opacity: 0.8; } 50% { transform: scale(1.1); opacity: 1; } 100% { transform: scale(1); opacity: 0.8; } }
-    
-    /* FAQ 動畫 */
+    [v-cloak] { display: none; }
     .faq-answer { max-height: 0; overflow: hidden; transition: max-height 0.3s ease-out; }
     .faq-item.active .faq-answer { max-height: 500px; padding-bottom: 16px; }
     .faq-icon { transition: transform 0.3s; }
     .faq-item.active .faq-icon { transform: rotate(180deg); }
-    
-    /* 隱藏未編譯的 Vue */
-    [v-cloak] { display: none; }
   </style>
 
   <script src="https://cdn.tailwindcss.com"></script>
-  <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+  
+  <script src="https://unpkg.com/vue@3/dist/vue.global.prod.js"></script>
+  
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet" media="print" onload="this.media='all'">
-  <noscript><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"></noscript>
 </head>
 
 <body class="locked">
 
-  <div id="loading-mask" class="fixed inset-0 bg-white z-[9999] flex items-center justify-center transition-opacity duration-500" style="opacity: 1;">
+  <div id="loading-mask" class="fixed inset-0 bg-white z-[9999] flex items-center justify-center transition-opacity duration-500">
       <div class="text-center">
           <img src="https://wsrv.nl/?url=https://drive.google.com/uc?id=16UrCpYWRkyEkvL7M73o0DIAvkKWtF0Lp&w=150&output=webp&q=60" 
                class="w-20 h-20 rounded-xl mb-4 mx-auto logo-breathe shadow-xl" 
                alt="巧品珠寶 Loading" width="80" height="80">
-          <p class="text-gray-500 text-sm font-bold tracking-widest">資料更新中...</p>
+          <p class="text-gray-500 text-sm font-bold tracking-widest">巧品珠寶 · 誠信估價中...</p>
       </div>
   </div>
 
@@ -87,17 +82,15 @@
     <div v-show="view === 'home'">
       <header class="hero-section">
         <transition name="fade">
-           <img v-if="heroImages.length > 0" 
-                :key="currentHeroIndex" 
-                :src="getOptimizedUrl(heroImages[currentHeroIndex], 1200)"
-                :srcset="`${getOptimizedUrl(heroImages[currentHeroIndex], 450)} 450w, ${getOptimizedUrl(heroImages[currentHeroIndex], 800)} 800w, ${getOptimizedUrl(heroImages[currentHeroIndex], 1200)} 1200w`"
-                sizes="(max-width: 600px) 450px, (max-width: 1024px) 800px, 1200px"
+           <img v-if="currentHeroUrl" 
+                :src="currentHeroUrl"
                 class="hero-img"
                 @error="handleImgError" 
                 alt="今日金價 Banner" 
+                width="1200" height="400"
                 fetchpriority="high">
         </transition>
-        <div v-if="heroImages.length === 0" class="absolute inset-0 bg-gradient-to-r from-gray-900 to-red-900 opacity-90"></div>
+        <div v-if="!currentHeroUrl" class="absolute inset-0 bg-gradient-to-r from-gray-900 to-red-900 opacity-90"></div>
         <div class="relative z-10 text-center text-white px-4 max-w-4xl">
           <div class="inline-block px-4 py-1 border-2 border-yellow-400 bg-yellow-900/80 rounded-full text-yellow-300 text-sm font-bold mb-6 backdrop-blur-md text-super-pop shadow-lg">經營十餘年 · 誠信老字號</div>
           <h1 class="text-4xl md:text-6xl font-black mb-6 leading-tight text-super-pop">黃金回收 <span class="text-amber-400">價值最大化</span></h1>
@@ -175,13 +168,14 @@
                <div v-for="article in visibleArticles" :key="article.id" class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden hover:shadow-md transition cursor-default group">
                   <div class="h-48 bg-gray-200 relative overflow-hidden cursor-pointer" @click.stop="openArticle(article, $event)">
                      <div class="absolute inset-0 flex items-center justify-center text-gray-400"><i class="fas fa-image text-3xl"></i></div>
-                     <img :src="getOptimizedUrl(article.image, 450)" 
+                     <img :src="getOptimizedUrl(article.image, 400)" 
                           loading="lazy"
+                          width="400" height="250"
                           class="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" 
                           :class="article.imgLoaded ? 'opacity-100' : 'opacity-0'" 
                           @load="article.imgLoaded = true" 
                           @error="article.imgLoaded = false" 
-                          :alt="article.title">
+                          :alt="article.title || '文章圖片'">
                      <div class="absolute top-0 right-0 bg-red-800 text-white text-xs font-bold px-3 py-1 rounded-bl-lg">{{ article.date }}</div>
                   </div>
                   <div class="p-5">
@@ -277,15 +271,26 @@
     </div>
   </div>
 
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script>
+    // 在頁面載入後，才動態載入 Chart.js
+    window.addEventListener('load', () => {
+        const script = document.createElement('script');
+        script.src = 'https://cdn.jsdelivr.net/npm/chart.js';
+        script.onload = () => {
+            // Chart.js 載入完成，可以在這裡初始化圖表 (如果有的話)
+            // 但我們在 Vue 裡面有防呆機制，所以不一定要在這裡 init
+        };
+        document.body.appendChild(script);
+    });
+  </script>
 
   <script>
     const { createApp } = Vue;
+    // ★★★ 務必替換為您的 GAS 部署網址 ★★★
     const GAS_API_URL = 'https://script.google.com/macros/s/AKfycbygJxxjK_2wd3hUB-M0XjU3SxusAWPpW99EPPqBIJjMrLWItT-4LHxSzYFatLQ-RvC9Qg/exec';
     
-    // ★★★ 本地快取邏輯 ★★★
     const CACHE_KEY = 'gold_price_cache';
-    const CACHE_DURATION = 1000 * 60 * 30; // 30 分鐘快取
+    const CACHE_DURATION = 1000 * 60 * 30; 
 
     createApp({
       data() {
@@ -293,33 +298,29 @@
           view: 'home', 
           currentArticle: null,
           currentImgLoaded: false, 
+          // ★★★ 優化 5: 資料預設值直接使用 wsrv.nl 加速連結 (不要放 Drive 連結) ★★★
+          // 這樣在 Vue 啟動的瞬間，載入的就是 50KB 的 WebP 圖，而不是 1.5MB 的原圖
+          heroImages: ['https://wsrv.nl/?url=https://drive.google.com/uc?id=1ASz1v5ZBQ-WV572r-BC4gZRuraywgKKv&w=1200&output=webp&q=75'], 
           
-          // ★★★ 1. 預填資料：讓網頁一打開就有內容，不用等 Google ★★★
-          // 這些資料是「靜態」的，當 API 載入完成後會被最新的覆蓋
           updateTime: '最新即時報價', 
-          heroImages: ['https://drive.google.com/thumbnail?id=1ASz1v5ZBQ-WV572r-BC4gZRuraywgKKv'], 
-          rates: { 
-              '24K': {buy: 16141, sell: 16571, buyDiff: 0, sellDiff: 0}, 
-              '18K': {buy: 12105, sell: 0}, 
-              'Pt': {buy: 6311, sell: 7291, buyDiff: 0, sellDiff: 0}, 
-              'Ag': {buy999: 57717, sell999: 69539} 
-          },
-          
+          rates: { '24K': {buy: 16141, sell: 16571, buyDiff: 0, sellDiff: 0}, '18K': {buy: 12105, sell: 0}, 'Pt': {buy: 6311, sell: 7291}, 'Ag': {buy999: 57717, sell999: 69539} },
           currentHeroIndex: 0, unit: 'qian', loading: false,
           calcUnit: 'qian', calcMetal: '24K', calcWeight: '',
           dailyData: [], rawChartData: [], chartLabels: [], chartInstance: null,
           articles: [], faqList: [],
-          visibleCount: 4, 
-          visibleQuoteCount: 20,
-          canClick: true // 先允許點擊，因為有資料了
+          visibleCount: 4, visibleQuoteCount: 20, canClick: true
         }
       },
       computed: {
         unitText() { return this.unit === 'qian' ? '台錢' : '公克'; },
         silverUnitText() { return this.unit === 'qian' ? '公斤' : '公克'; },
-        currentHeroImage() { 
-           if(this.heroImages.length === 0) return 'https://via.placeholder.com/1920x600?text=No+Images';
-           return this.getOptimizedUrl(this.heroImages[this.currentHeroIndex], 1200); 
+        // Banner 圖片連結 (已在 data 中預先優化，這裡只是輔助)
+        currentHeroUrl() {
+            if(!this.heroImages || this.heroImages.length === 0) return '';
+            // 如果是 wsrv 開頭，直接回傳；如果是 drive 開頭，進行轉換
+            const url = this.heroImages[this.currentHeroIndex];
+            if(url.includes('wsrv.nl')) return url;
+            return this.getOptimizedUrl(url, 1200);
         },
         calculateTotal() {
           if(!this.calcWeight) return 0;
@@ -334,6 +335,8 @@
       methods: {
         getOptimizedUrl(originalUrl, width = 800) {
             if (!originalUrl) return "https://via.placeholder.com/600x400?text=No+Image";
+            if (originalUrl.includes('wsrv.nl')) return originalUrl; // 避免重複編碼
+            
             let id = "";
             const match = originalUrl.match(/id=([-\w]{25,})/) || originalUrl.match(/\/d\/([-\w]{25,})/);
             if (match) {
@@ -377,12 +380,15 @@
         handleImgError(e) { e.target.src = "https://via.placeholder.com/600x400?text=No+Image"; }, 
         loadMoreArticles() { this.visibleCount += 10; },
         loadMoreQuotes() { this.visibleQuoteCount += 20; },
+        
         initChart(labels, data) {
+          if (typeof Chart === 'undefined') return; // 如果 Chart.js 還沒載入，就跳過
           const ctx = document.getElementById('mainChart'); if(!ctx || !data || data.length === 0) return;
           if(this.chartInstance) this.chartInstance.destroy();
           let d = this.unit === 'qian' ? data : data.map(v => v / 3.75);
           this.chartInstance = new Chart(ctx, { type: 'line', data: { labels: labels, datasets: [{ label: '回收價', data: d, borderColor: '#D4AF37', backgroundColor: 'rgba(212, 175, 55, 0.1)', borderWidth: 2, fill: true, tension: 0.1 }] }, options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { grid: { color: '#f3f4f6' } }, x: { grid: { display: false } } } } });
         },
+        
         goHome() {
            this.view = 'home'; this.currentArticle = null;
            window.history.replaceState(null, null, window.location.pathname);
@@ -397,14 +403,12 @@
         },
         unlockBody() {
             window.scrollTo(0, 0); document.body.classList.remove('locked');
-            // 因為有預填資料，直接隱藏 Loading Mask
             const mask = document.getElementById('loading-mask'); if(mask) mask.style.display = 'none';
             setTimeout(() => { this.canClick = true; }, 100);
         },
         updateChartOnUnitChange() { if(this.rawChartData && this.rawChartData.length > 0 && this.view === 'home') { this.initChart(this.chartLabels, this.rawChartData); } },
         
         async fetchData() {
-            // ★★★ 快取邏輯：即使有預填資料，還是先檢查快取，因為快取可能比預填資料更新 ★★★
             const cached = localStorage.getItem(CACHE_KEY);
             if (cached) {
                 const { data, timestamp } = JSON.parse(cached);
@@ -414,9 +418,7 @@
                     return; 
                 }
             }
-
-            // ★★★ 無快取時，先顯示預填資料，背景再偷偷去抓新的 ★★★
-            this.unlockBody();
+            this.unlockBody(); // 先解鎖畫面，背景抓資料
 
             try {
                 const initRes = await fetch(GAS_API_URL + '?action=getInitData');
@@ -430,14 +432,7 @@
                 const articleList = await articleRes.json();
 
                 const fullData = { initData, chartData, articleList };
-                
-                // 存入快取
-                localStorage.setItem(CACHE_KEY, JSON.stringify({
-                    timestamp: Date.now(),
-                    data: fullData
-                }));
-
-                // 更新畫面
+                localStorage.setItem(CACHE_KEY, JSON.stringify({ timestamp: Date.now(), data: fullData }));
                 this.applyData(fullData);
 
             } catch(e) { console.error("Fetch Error:", e); }
@@ -450,7 +445,8 @@
                 this.rates = initData.rates.rates;
                 this.updateTime = initData.rates.updatedAt;
                 if(initData.rates.heroImages && initData.rates.heroImages.length > 0) { 
-                    this.heroImages = initData.rates.heroImages; 
+                    // 這裡也要把 API 回傳的連結轉成加速連結
+                    this.heroImages = initData.rates.heroImages.map(url => this.getOptimizedUrl(url, 1200));
                     this.startCarousel(); 
                 }
             }
@@ -461,12 +457,16 @@
             if(chartData.chart) { 
                 this.rawChartData = chartData.chart.data; 
                 this.chartLabels = chartData.chart.labels;
-                if(this.view === 'home') this.$nextTick(() => this.initChart(this.chartLabels, this.rawChartData));
+                // 延遲繪圖，確保 Chart.js 已載入
+                setTimeout(() => {
+                    if(this.view === 'home') this.initChart(this.chartLabels, this.rawChartData);
+                }, 500); 
             }
 
             this.articles = (articleList || []).map(a => ({ 
                 ...a, 
-                image: this.getOptimizedUrl(a.image, 600),
+                // 文章列表圖強制用小尺寸 (400px)
+                image: this.getOptimizedUrl(a.image, 400),
                 imgLoaded: false 
             }));
         }
