@@ -24,9 +24,36 @@
 
   <style>
     body { margin: 0; font-family: system-ui, -apple-system, sans-serif; background-color: #f3f4f6; color: #1f2937; }
-    .hero-section { position: relative; height: 400px; background-color: #111827; overflow: hidden; display: flex; align-items: center; justify-content: center; text-align: center; color: white; }
-    /* 確保圖片絕對定位且不影響顏色 */
-    .hero-img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; z-index: 0; }
+    
+    /* Hero 區域：移除背景色，確保圖片無色差 */
+    .hero-section { 
+        position: relative; 
+        height: 400px; 
+        background-color: transparent; /* 透明背景 */
+        overflow: hidden; 
+        display: flex; 
+        align-items: center; 
+        justify-content: center; 
+        text-align: center; 
+        color: white; 
+    }
+    
+    /* Hero 圖片：透明度改為 1 (完全不透明)，移除所有遮罩 */
+    .hero-img { 
+        position: absolute; 
+        inset: 0; 
+        width: 100%; 
+        height: 100%; 
+        object-fit: cover; 
+        z-index: 0; 
+        opacity: 1; /* ★★★ 關鍵修正：確保圖片原色顯示 ★★★ */
+    }
+
+    /* 為了讓白字在淺色圖片上也能看見，只在文字下方加一點點陰影，而不是蓋住整張圖 */
+    .hero-text-shadow {
+        text-shadow: 0 2px 4px rgba(0,0,0,0.7);
+    }
+
     .nav-sticky { position: sticky; top: 0; z-index: 40; background: white; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); height: 84px; }
     [v-cloak] { display: none; }
     .faq-answer { max-height: 0; overflow: hidden; transition: max-height 0.3s ease-out; }
@@ -118,6 +145,7 @@
 
     <div v-show="view === 'home'">
       <header class="hero-section">
+        <transition name="fade">
            <img src="https://wsrv.nl/?url=https://drive.google.com/uc?id=1ASz1v5ZBQ-WV572r-BC4gZRuraywgKKv&w=600&output=webp&q=75"
                 srcset="https://wsrv.nl/?url=https://drive.google.com/uc?id=1ASz1v5ZBQ-WV572r-BC4gZRuraywgKKv&w=600&output=webp&q=75 600w, 
                         https://wsrv.nl/?url=https://drive.google.com/uc?id=1ASz1v5ZBQ-WV572r-BC4gZRuraywgKKv&w=1200&output=webp&q=75 1200w"
@@ -125,12 +153,11 @@
                 class="hero-img"
                 alt="今日金價 Banner" 
                 fetchpriority="high">
-                
-        <div class="absolute inset-0 bg-gradient-to-r from-gray-900 to-red-900 opacity-80 z-10"></div>
+        </transition>
         
-        <div class="relative z-20 text-center text-white px-4 max-w-4xl">
-          <div class="inline-block px-4 py-1 border-2 border-yellow-400 bg-yellow-900/80 rounded-full text-yellow-300 text-sm font-bold mb-6 backdrop-blur-md text-super-pop shadow-lg">經營十餘年 · 誠信老字號</div>
-          <h1 class="text-4xl md:text-6xl font-black mb-6 leading-tight text-super-pop">黃金回收 <span class="text-amber-400">價值最大化</span></h1>
+        <div class="relative z-20 text-center text-white px-4 max-w-4xl hero-text-shadow">
+          <div class="inline-block px-4 py-1 border-2 border-yellow-400 bg-yellow-900/80 rounded-full text-yellow-300 text-sm font-bold mb-6 backdrop-blur-md shadow-lg">經營十餘年 · 誠信老字號</div>
+          <h1 class="text-4xl md:text-6xl font-black mb-6 leading-tight">黃金回收 <span class="text-amber-400">價值最大化</span></h1>
           <div class="flex flex-col sm:flex-row gap-4 justify-center">
              <button @click="scrollToRates" class="bg-amber-500 text-slate-900 font-bold py-3 px-10 rounded-full shadow-lg hover:bg-amber-400 transition border-2 border-amber-600">查看今日金價</button>
              <button @click="scrollToCalc" class="bg-green-600 text-white font-bold py-3 px-10 rounded-full shadow-lg hover:bg-green-500 transition border-2 border-green-700">舊金回收試算</button>
@@ -355,6 +382,7 @@
   </div>
 
   <script>
+    // 延遲載入 Chart.js
     window.addEventListener('load', () => {
         const script = document.createElement('script');
         script.src = 'https://cdn.jsdelivr.net/npm/chart.js';
