@@ -445,7 +445,7 @@
                 this.rates = initData.rates.rates;
                 this.updateTime = initData.rates.updatedAt;
                 if(initData.rates.heroImages && initData.rates.heroImages.length > 0) { 
-                    // 這裡也要把 API 回傳的連結轉成加速連結
+                    // ★★★ 關鍵修正：這裡也要把 API 回傳的連結轉成加速連結，否則更新後又會變回慢速圖 ★★★
                     this.heroImages = initData.rates.heroImages.map(url => this.getOptimizedUrl(url, 1200));
                     this.startCarousel(); 
                 }
