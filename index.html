@@ -8,7 +8,6 @@
   <meta name="description" content="台北大安區實體店面，專營黃金回收、白金、K金、鑽石買賣。提供每日最新即時金價查詢與線上試算。誠信經營十餘年，高價現金回收，歡迎預約估價。">
   <meta name="keywords" content="每日金價, 今天金價多少, 金價查詢, 台灣金價, 黃金回收, K金回收, 白金回收, 鉑金回收, 飾金回收, 舊金回收, 黃金一錢多少, 台北銀樓推薦, 高價收購黃金, 貴金屬買賣, 鑽石回收, 巧品珠寶">
   <meta name="author" content="巧品珠寶 HUANG JIA FEI LI">
-  <meta name="robots" content="index, follow, max-image-preview:large">
   
   <meta property="og:type" content="business.business">
   <meta property="og:title" content="巧品珠寶 | 台北高價黃金回收">
@@ -16,12 +15,15 @@
   <meta property="og:site_name" content="巧品珠寶">
   <meta property="og:locale" content="zh_TW">
 
+  <link rel="preconnect" href="https://wsrv.nl">
+  <link rel="preconnect" href="https://script.google.com">
+  <link rel="preconnect" href="https://cdn.tailwindcss.com">
+
   <script src="https://cdn.tailwindcss.com"></script>
-  <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script> <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet"> <script src="https://cdn.jsdelivr.net/npm/chart.js"></script> ```
+  <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet" media="print" onload="this.media='all'">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js" defer></script>
 
-
-  
-  
   <style>
     :root { --brand-red: #8B0000; --brand-gold: #D4AF37; }
     body.locked { overflow: hidden !important; height: 100vh !important; position: fixed; width: 100%; }
@@ -70,8 +72,8 @@
 
   <div id="loading-mask">
       <div class="text-center">
-          <img src="https://drive.google.com/thumbnail?id=16UrCpYWRkyEkvL7M73o0DIAvkKWtF0Lp&sz=w200" 
-               class="w-20 h-20 rounded-xl mb-4 mx-auto logo-breathe shadow-xl" alt="巧品珠寶">
+          <img src="https://wsrv.nl/?url=https://drive.google.com/uc?id=16UrCpYWRkyEkvL7M73o0DIAvkKWtF0Lp&w=200&output=webp" 
+               class="w-20 h-20 rounded-xl mb-4 mx-auto logo-breathe shadow-xl" alt="巧品珠寶 Loading Logo">
           <p class="text-gray-500 text-sm font-bold tracking-widest">巧品珠寶 · 誠信估價中...</p>
       </div>
   </div>
@@ -89,7 +91,7 @@
       <div class="max-w-7xl mx-auto px-4">
         <div class="flex justify-between h-20 items-center">
           <div class="flex items-center gap-3 cursor-pointer" @click="goHome">
-            <img src="https://drive.google.com/thumbnail?id=16UrCpYWRkyEkvL7M73o0DIAvkKWtF0Lp&sz=w200" 
+            <img src="https://wsrv.nl/?url=https://drive.google.com/uc?id=16UrCpYWRkyEkvL7M73o0DIAvkKWtF0Lp&w=100&output=webp" 
                  class="w-10 h-10 rounded-lg object-cover border border-yellow-500" alt="巧品珠寶 Logo">
             <div><div class="text-2xl font-bold tracking-wider text-red-900">巧品珠寶</div><div class="text-xs text-gray-500">HUANG JIA FEI LI</div></div>
           </div>
@@ -109,7 +111,7 @@
     <div v-show="view === 'home'">
       <header class="relative h-[400px] md:h-[500px] flex items-center justify-center overflow-hidden bg-gray-900">
         <transition name="fade">
-           <img v-if="heroImages.length > 0" :key="currentHeroIndex" :src="currentHeroImage" class="absolute inset-0 w-full h-full object-cover opacity-70" @error="handleImgError" alt="Banner Image">
+           <img v-if="heroImages.length > 0" :key="currentHeroIndex" :src="currentHeroImage" class="absolute inset-0 w-full h-full object-cover opacity-70" @error="handleImgError" alt="今日金價 Banner">
         </transition>
         <div v-if="heroImages.length === 0" class="absolute inset-0 bg-gradient-to-r from-gray-900 to-red-900 opacity-90"></div>
         <div class="relative z-10 text-center text-white px-4 max-w-4xl">
@@ -189,7 +191,13 @@
                <div v-for="article in visibleArticles" :key="article.id" class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden hover:shadow-md transition cursor-default group">
                   <div class="h-48 bg-gray-200 relative overflow-hidden cursor-pointer" @click.stop="openArticle(article, $event)">
                      <div class="absolute inset-0 flex items-center justify-center text-gray-400"><i class="fas fa-image text-3xl"></i></div>
-                     <img :src="article.image || 'https://via.placeholder.com/600x400?text=No+Image'" class="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" :class="article.imgLoaded ? 'opacity-100' : 'opacity-0'" @load="article.imgLoaded = true" @error="article.imgLoaded = false" alt="Article Thumbnail">
+                     <img :src="article.image || 'https://via.placeholder.com/600x400?text=No+Image'" 
+                          loading="lazy"
+                          class="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" 
+                          :class="article.imgLoaded ? 'opacity-100' : 'opacity-0'" 
+                          @load="article.imgLoaded = true" 
+                          @error="article.imgLoaded = false" 
+                          :alt="article.title">
                      <div class="absolute top-0 right-0 bg-red-800 text-white text-xs font-bold px-3 py-1 rounded-bl-lg">{{ article.date }}</div>
                   </div>
                   <div class="p-5">
@@ -266,7 +274,7 @@
          <article class="bg-white rounded-2xl shadow-xl overflow-hidden border border-gray-100">
            <div class="w-full h-[300px] md:h-[400px] bg-gray-200 relative bg-gray-100">
              <div class="absolute inset-0 flex items-center justify-center text-gray-400"><i class="fas fa-image text-4xl"></i></div>
-             <img v-if="currentArticle.image" :src="currentArticle.image" class="absolute inset-0 w-full h-full object-cover transition-opacity duration-500" :class="currentImgLoaded ? 'opacity-100' : 'opacity-0'" @load="currentImgLoaded = true" @error="currentImgLoaded = false" alt="Cover Image">
+             <img v-if="currentArticle.image" :src="currentArticle.image" class="absolute inset-0 w-full h-full object-cover transition-opacity duration-500" :class="currentImgLoaded ? 'opacity-100' : 'opacity-0'" @load="currentImgLoaded = true" @error="currentImgLoaded = false" :alt="currentArticle.title">
            </div>
            <div class="p-8 md:p-12">
              <div class="flex items-center gap-4 mb-6 text-sm text-gray-500"><span class="bg-red-100 text-red-800 px-3 py-1 rounded-full text-xs font-bold">知識專欄</span><span>{{ currentArticle.date }}</span></div>
@@ -289,7 +297,6 @@
     const { createApp } = Vue;
 
     // ★★★ 務必替換為您的 GAS 部署網址 ★★★
-    // 範例：'https://script.google.com/macros/s/AKfycbygJxxjK_2wd3hUB-M0XjU3SxusAWPpW99EPPqBIJjMrLWItT-4LHxSzYFatLQ-RvC9Qg/exec'
     const GAS_API_URL = 'https://script.google.com/macros/s/AKfycbygJxxjK_2wd3hUB-M0XjU3SxusAWPpW99EPPqBIJjMrLWItT-4LHxSzYFatLQ-RvC9Qg/exec';
 
     createApp({
@@ -313,7 +320,7 @@
         silverUnitText() { return this.unit === 'qian' ? '公斤' : '公克'; },
         currentHeroImage() { 
            if(this.heroImages.length === 0) return 'https://via.placeholder.com/1920x600?text=No+Images';
-           // ★★★ 自動優化 Hero 圖片 ★★★
+           // ★★★ 自動優化 Hero 圖片 (wsrv.nl) ★★★
            return this.getOptimizedUrl(this.heroImages[this.currentHeroIndex], 1200); 
         },
         calculateTotal() {
@@ -327,19 +334,18 @@
         visibleDailyData() { return this.dailyData.slice(0, this.visibleQuoteCount); }
       },
       methods: {
-        // ★★★ 核心圖片優化函式 (使用 wsrv.nl) ★★★
+        // ★★★ 圖片加速核心函式 (wsrv.nl) ★★★
+        // 說明：自動將 Google Drive 慢速連結轉為全球 CDN 加速連結，並轉為 WebP 格式
         getOptimizedUrl(originalUrl, width = 800) {
             if (!originalUrl) return "https://via.placeholder.com/600x400?text=No+Image";
             let id = "";
             const match = originalUrl.match(/id=([-\w]{25,})/) || originalUrl.match(/\/d\/([-\w]{25,})/);
             if (match) {
                 id = match[1];
-                // 使用 wsrv.nl 加速、轉 WebP、快取
                 return `https://wsrv.nl/?url=https://drive.google.com/uc?id=${id}&w=${width}&output=webp&q=80&n=-1`;
             }
             return originalUrl;
         },
-
         toggleFaq(event) { event.currentTarget.classList.toggle('active'); },
         scrollTo(id) { 
           if(this.view !== 'home') {
@@ -372,10 +378,8 @@
             navigator.clipboard.writeText(msg).then(() => { alert("已複製預約訊息！即將為您打開 LINE..."); window.open("https://lin.ee/SDN6jpk", "_blank"); }).catch(err => { window.open("https://lin.ee/SDN6jpk", "_blank"); });
         },
         handleImgError(e) { e.target.src = "https://via.placeholder.com/600x400?text=No+Image"; }, 
-        
         loadMoreArticles() { this.visibleCount += 10; },
         loadMoreQuotes() { this.visibleQuoteCount += 20; },
-        
         initChart(labels, data) {
           const ctx = document.getElementById('mainChart'); if(!ctx || !data || data.length === 0) return;
           if(this.chartInstance) this.chartInstance.destroy();
@@ -390,10 +394,9 @@
         openArticle(article, event) {
            if (!event || !event.isTrusted || !this.canClick) return;
            
-           // ★★★ 點開文章時也即時優化圖片 ★★★
+           // 文章內頁圖片也進行加速優化
            let fastImage = this.getOptimizedUrl(article.image, 800);
            this.currentArticle = { ...article, image: fastImage };
-           
            this.currentImgLoaded = false; this.view = 'article';
            window.history.pushState({}, '', '?p=article&id=' + article.id); window.scrollTo(0, 0);
         },
@@ -406,7 +409,6 @@
         
         async fetchData() {
             try {
-                // 1. Init Data
                 const initRes = await fetch(GAS_API_URL + '?action=getInitData');
                 const initData = await initRes.json();
                 if(initData.rates) {
@@ -416,7 +418,6 @@
                 }
                 if(initData.faq) this.faqList = initData.faq;
 
-                // 2. Chart & Table
                 this.loading = true;
                 const chartRes = await fetch(GAS_API_URL + '?action=getChartData');
                 const chartData = await chartRes.json();
@@ -428,20 +429,17 @@
                     if(this.view === 'home') this.initChart(this.chartLabels, this.rawChartData);
                 }
 
-                // 3. Articles
                 const articleRes = await fetch(GAS_API_URL + '?action=getArticles');
                 const articleList = await articleRes.json();
                 
-                // ★★★ 預先優化列表縮圖 (寬度600) ★★★
+                // ★★★ 列表圖片預處理：加速 + 小尺寸 (寬度 600) ★★★
                 this.articles = (articleList || []).map(a => ({ 
                     ...a, 
                     image: this.getOptimizedUrl(a.image, 600),
                     imgLoaded: false 
                 }));
 
-                // 解鎖畫面
                 this.unlockBody();
-                
             } catch(e) { console.error("Fetch Error:", e); this.unlockBody(); }
         }
       },
@@ -450,10 +448,9 @@
           if ('scrollRestoration' in history) { history.scrollRestoration = 'manual'; }
           const url = new URL(window.location.href);
           if (url.searchParams.has('id')) { url.searchParams.delete('id'); url.searchParams.delete('p'); window.history.replaceState(null, null, url.pathname); }
-          this.fetchData(); // 啟動抓取
+          this.fetchData(); 
       }
     }).mount('#app');
   </script>
 </body>
 </html>
-
