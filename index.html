@@ -34,9 +34,7 @@
   </style>
 
   <script src="https://cdn.tailwindcss.com"></script>
-  
   <script src="https://unpkg.com/vue@3/dist/vue.global.prod.js"></script>
-  
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet" media="print" onload="this.media='all'">
 </head>
 
@@ -68,7 +66,7 @@
           <div><div class="text-2xl font-bold tracking-wider text-red-900">巧品珠寶</div><div class="text-xs text-gray-500">HUANG JIA FEI LI</div></div>
         </div>
         <div class="flex items-center space-x-4">
-          <button @click="goHome" class="font-medium hover:text-red-800 hidden md:block">今日金價</button>
+          <button @click="scrollToRates" class="font-medium hover:text-red-800 hidden md:block">今日金價</button>
           <button @click="scrollTo('blog-section')" class="font-medium hover:text-red-800 hidden md:block">知識專欄</button>
           <div class="flex items-center gap-2 bg-red-50 px-3 py-1.5 rounded-full border border-red-100"><i class="fas fa-phone-alt text-red-800"></i><span class="font-bold text-red-900 font-nums">0986-821-626</span></div>
         </div>
@@ -95,7 +93,7 @@
           <div class="inline-block px-4 py-1 border-2 border-yellow-400 bg-yellow-900/80 rounded-full text-yellow-300 text-sm font-bold mb-6 backdrop-blur-md text-super-pop shadow-lg">經營十餘年 · 誠信老字號</div>
           <h1 class="text-4xl md:text-6xl font-black mb-6 leading-tight text-super-pop">黃金回收 <span class="text-amber-400">價值最大化</span></h1>
           <div class="flex flex-col sm:flex-row gap-4 justify-center">
-             <button @click="scrollTo('rates')" class="bg-amber-500 text-slate-900 font-bold py-3 px-10 rounded-full shadow-lg hover:bg-amber-400 transition border-2 border-amber-600">查看今日金價</button>
+             <button @click="scrollToRates" class="bg-amber-500 text-slate-900 font-bold py-3 px-10 rounded-full shadow-lg hover:bg-amber-400 transition border-2 border-amber-600">查看今日金價</button>
              <button @click="scrollTo('calculator-section')" class="bg-green-600 text-white font-bold py-3 px-10 rounded-full shadow-lg hover:bg-green-500 transition border-2 border-green-700">舊金回收試算</button>
           </div>
         </div>
@@ -150,6 +148,27 @@
              </div>
           </section>
 
+          <div id="rates-mobile" class="bg-white rounded-2xl shadow-xl border-t-4 border-red-800 mb-8 lg:hidden">
+             <div class="p-5 bg-gradient-to-b from-gray-50 to-white border-b flex justify-between items-start">
+               <div><h3 class="font-bold text-red-900 text-lg">今日牌價</h3><p class="text-xs text-gray-500 mt-1">{{ updateTime }}</p></div>
+               <button @click="toggleUnit" class="text-xs bg-gray-800 text-white hover:bg-black px-3 py-1.5 rounded shadow transition">單位: <span class="text-amber-400 font-bold">{{ unitText }}</span></button>
+             </div>
+             <div class="bg-red-50 p-4 m-4 rounded-xl border border-red-100">
+               <div class="flex justify-between text-sm mb-2 font-bold text-red-800"><span>黃金 (24K)</span> <i class="fas fa-crown text-amber-500"></i></div>
+               <div class="flex justify-between">
+                  <div class="text-center w-1/2 border-r border-red-200">
+                      <div class="text-xs text-gray-500">回收(Buy)</div>
+                      <div class="text-2xl font-bold text-green-600">{{ formatPrice(rates['24K'].buy) }}</div>
+                      <div class="text-xs" v-html="formatDiff(rates['24K'].buyDiff)"></div>
+                  </div>
+                  <div class="text-center w-1/2">
+                      <div class="text-xs text-gray-500">賣出(Sell)</div>
+                      <div class="text-xl font-bold text-blue-600">{{ formatPrice(rates['24K'].sell) }}</div>
+                      <div class="text-xs" v-html="formatDiff(rates['24K'].sellDiff)"></div>
+                  </div>
+               </div>
+             </div>
+          </div>
           <section class="bg-white rounded-2xl shadow-xl p-6" v-if="faqList.length > 0">
              <h2 class="text-xl font-bold mb-4 border-l-4 border-red-800 pl-3">常見問題 FAQ</h2>
              <div class="space-y-2">
@@ -196,7 +215,7 @@
         </div>
 
         <aside class="lg:col-span-4 space-y-6">
-          <div id="rates" class="bg-white rounded-2xl shadow-xl border-t-4 border-red-800 sticky top-24 overflow-hidden">
+          <div id="rates-desktop" class="bg-white rounded-2xl shadow-xl border-t-4 border-red-800 sticky top-24 overflow-hidden hidden lg:block">
              <div class="p-5 bg-gradient-to-b from-gray-50 to-white border-b flex justify-between items-start">
                <div><h3 class="font-bold text-red-900 text-lg">今日牌價</h3><p class="text-xs text-gray-500 mt-1">{{ updateTime }}</p></div>
                <button @click="toggleUnit" class="text-xs bg-gray-800 text-white hover:bg-black px-3 py-1.5 rounded shadow transition">單位: <span class="text-amber-400 font-bold">{{ unitText }}</span></button>
@@ -272,14 +291,11 @@
   </div>
 
   <script>
-    // 在頁面載入後，才動態載入 Chart.js
+    // 延遲載入 Chart.js
     window.addEventListener('load', () => {
         const script = document.createElement('script');
         script.src = 'https://cdn.jsdelivr.net/npm/chart.js';
-        script.onload = () => {
-            // Chart.js 載入完成，可以在這裡初始化圖表 (如果有的話)
-            // 但我們在 Vue 裡面有防呆機制，所以不一定要在這裡 init
-        };
+        script.onload = () => { };
         document.body.appendChild(script);
     });
   </script>
@@ -298,10 +314,8 @@
           view: 'home', 
           currentArticle: null,
           currentImgLoaded: false, 
-          // ★★★ 優化 5: 資料預設值直接使用 wsrv.nl 加速連結 (不要放 Drive 連結) ★★★
-          // 這樣在 Vue 啟動的瞬間，載入的就是 50KB 的 WebP 圖，而不是 1.5MB 的原圖
+          // 資料預設值
           heroImages: ['https://wsrv.nl/?url=https://drive.google.com/uc?id=1ASz1v5ZBQ-WV572r-BC4gZRuraywgKKv&w=1200&output=webp&q=75'], 
-          
           updateTime: '最新即時報價', 
           rates: { '24K': {buy: 16141, sell: 16571, buyDiff: 0, sellDiff: 0}, '18K': {buy: 12105, sell: 0}, 'Pt': {buy: 6311, sell: 7291}, 'Ag': {buy999: 57717, sell999: 69539} },
           currentHeroIndex: 0, unit: 'qian', loading: false,
@@ -314,10 +328,8 @@
       computed: {
         unitText() { return this.unit === 'qian' ? '台錢' : '公克'; },
         silverUnitText() { return this.unit === 'qian' ? '公斤' : '公克'; },
-        // Banner 圖片連結 (已在 data 中預先優化，這裡只是輔助)
         currentHeroUrl() {
             if(!this.heroImages || this.heroImages.length === 0) return '';
-            // 如果是 wsrv 開頭，直接回傳；如果是 drive 開頭，進行轉換
             const url = this.heroImages[this.currentHeroIndex];
             if(url.includes('wsrv.nl')) return url;
             return this.getOptimizedUrl(url, 1200);
@@ -335,8 +347,7 @@
       methods: {
         getOptimizedUrl(originalUrl, width = 800) {
             if (!originalUrl) return "https://via.placeholder.com/600x400?text=No+Image";
-            if (originalUrl.includes('wsrv.nl')) return originalUrl; // 避免重複編碼
-            
+            if (originalUrl.includes('wsrv.nl')) return originalUrl;
             let id = "";
             const match = originalUrl.match(/id=([-\w]{25,})/) || originalUrl.match(/\/d\/([-\w]{25,})/);
             if (match) {
@@ -352,6 +363,13 @@
              this.view = 'home';
              this.$nextTick(() => { const el = document.getElementById(id); if(el) el.scrollIntoView({ behavior: 'smooth' }); });
           } else { const el = document.getElementById(id); if(el) el.scrollIntoView({ behavior: 'smooth' }); }
+        },
+        // ★★★ 新增：智慧捲動到金價區塊 (自動判斷手機/電腦) ★★★
+        scrollToRates() {
+           // 如果螢幕寬度小於 1024px (手機/平板)，捲動到 rates-mobile
+           // 否則捲動到 rates-desktop
+           const targetId = window.innerWidth < 1024 ? 'rates-mobile' : 'rates-desktop';
+           this.scrollTo(targetId);
         },
         toggleUnit() { this.unit = this.unit === 'qian' ? 'gram' : 'qian'; },
         toggleCalcUnit() { this.calcUnit = this.calcUnit === 'qian' ? 'gram' : 'qian'; },
@@ -382,7 +400,7 @@
         loadMoreQuotes() { this.visibleQuoteCount += 20; },
         
         initChart(labels, data) {
-          if (typeof Chart === 'undefined') return; // 如果 Chart.js 還沒載入，就跳過
+          if (typeof Chart === 'undefined') return; 
           const ctx = document.getElementById('mainChart'); if(!ctx || !data || data.length === 0) return;
           if(this.chartInstance) this.chartInstance.destroy();
           let d = this.unit === 'qian' ? data : data.map(v => v / 3.75);
@@ -418,7 +436,7 @@
                     return; 
                 }
             }
-            this.unlockBody(); // 先解鎖畫面，背景抓資料
+            this.unlockBody(); 
 
             try {
                 const initRes = await fetch(GAS_API_URL + '?action=getInitData');
@@ -445,7 +463,6 @@
                 this.rates = initData.rates.rates;
                 this.updateTime = initData.rates.updatedAt;
                 if(initData.rates.heroImages && initData.rates.heroImages.length > 0) { 
-                    // ★★★ 關鍵修正：這裡也要把 API 回傳的連結轉成加速連結，否則更新後又會變回慢速圖 ★★★
                     this.heroImages = initData.rates.heroImages.map(url => this.getOptimizedUrl(url, 1200));
                     this.startCarousel(); 
                 }
@@ -457,7 +474,6 @@
             if(chartData.chart) { 
                 this.rawChartData = chartData.chart.data; 
                 this.chartLabels = chartData.chart.labels;
-                // 延遲繪圖，確保 Chart.js 已載入
                 setTimeout(() => {
                     if(this.view === 'home') this.initChart(this.chartLabels, this.rawChartData);
                 }, 500); 
@@ -465,7 +481,6 @@
 
             this.articles = (articleList || []).map(a => ({ 
                 ...a, 
-                // 文章列表圖強制用小尺寸 (400px)
                 image: this.getOptimizedUrl(a.image, 400),
                 imgLoaded: false 
             }));
