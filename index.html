@@ -23,7 +23,8 @@
     body { margin: 0; font-family: system-ui, -apple-system, sans-serif; background-color: #f3f4f6; color: #1f2937; }
     .hero-section { position: relative; height: 400px; background-color: #111827; overflow: hidden; display: flex; align-items: center; justify-content: center; text-align: center; color: white; }
     .hero-img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0.7; }
-    .nav-sticky { position: sticky; top: 0; z-index: 40; background: white; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); height: 80px; }
+    /* Nav 高度稍微增加以容納兩行資訊，避免擁擠 */
+    .nav-sticky { position: sticky; top: 0; z-index: 40; background: white; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); height: 84px; }
     .logo-breathe { animation: breathe 2s infinite ease-in-out; }
     @keyframes breathe { 0% { transform: scale(1); opacity: 0.8; } 50% { transform: scale(1.1); opacity: 1; } 100% { transform: scale(1); opacity: 0.8; } }
     [v-cloak] { display: none; }
@@ -92,10 +93,21 @@
                class="w-10 h-10 rounded-lg object-cover border border-yellow-500" alt="巧品珠寶 Logo" width="40" height="40">
           <div><div class="text-2xl font-bold tracking-wider text-red-900">巧品珠寶</div><div class="text-xs text-gray-500">HUANG JIA FEI LI</div></div>
         </div>
+
         <div class="flex items-center space-x-4">
           <button @click="scrollToRates" class="font-medium hover:text-red-800 hidden md:block">今日金價</button>
           <button @click="scrollTo('blog-section')" class="font-medium hover:text-red-800 hidden md:block">知識專欄</button>
-          <div class="flex items-center gap-2 bg-red-50 px-3 py-1.5 rounded-full border border-red-100"><i class="fas fa-phone-alt text-red-800"></i><span class="font-bold text-red-900 font-nums">0986-821-626</span></div>
+          
+          <div class="flex flex-col items-end">
+              <a href="tel:0986821626" class="flex items-center gap-2 bg-red-50 px-3 py-1 rounded-full border border-red-100 hover:bg-red-100 transition mb-1">
+                  <i class="fas fa-phone-alt text-red-800 text-xs"></i>
+                  <span class="font-bold text-red-900 font-nums text-sm">0986-821-626</span>
+              </a>
+              <a href="https://maps.google.com/?q=台北市大安區濟南路三段62-1號1樓" target="_blank" class="flex items-center gap-1 text-gray-500 hover:text-red-800 transition text-[10px] md:text-xs">
+                  <i class="fas fa-map-marker-alt text-red-600"></i>
+                  <span>大安區濟南路三段62-1號</span>
+              </a>
+          </div>
         </div>
       </div>
     </nav>
@@ -216,6 +228,7 @@
                </div>
              </div>
           </div>
+
           <section class="bg-white rounded-2xl shadow-xl p-6" v-if="faqList.length > 0">
              <h2 class="text-xl font-bold mb-4 border-l-4 border-red-800 pl-3">常見問題 FAQ</h2>
              <div class="space-y-2">
