@@ -8,6 +8,7 @@
   <meta name="description" content="台北大安區實體店面，專營黃金回收、白金、K金、鑽石買賣。提供每日最新即時金價查詢與線上試算。誠信經營十餘年，高價現金回收，歡迎預約估價。">
   <meta name="keywords" content="每日金價, 今天金價多少, 金價查詢, 台灣金價, 黃金回收, K金回收, 白金回收, 鉑金回收, 飾金回收, 舊金回收, 黃金一錢多少, 台北銀樓推薦, 高價收購黃金, 貴金屬買賣, 鑽石回收, 巧品珠寶">
   <meta name="author" content="巧品珠寶 HUANG JIA FEI LI">
+  <meta name="robots" content="index, follow, max-image-preview:large">
   
   <meta property="og:type" content="business.business">
   <meta property="og:title" content="巧品珠寶 | 台北高價黃金回收">
@@ -16,9 +17,9 @@
   <meta property="og:locale" content="zh_TW">
 
   <script src="https://cdn.tailwindcss.com"></script>
-  <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
-  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://unpkg.com/vue@3/dist/vue.global.js" defer></script>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet" media="print" onload="this.media='all'">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js" defer></script>
 
   <style>
     :root { --brand-red: #8B0000; --brand-gold: #D4AF37; }
@@ -53,6 +54,7 @@
         transition: opacity 0.5s ease;
     }
     #loading-mask.fade-out { opacity: 0; pointer-events: none; }
+    
     @keyframes breathe { 0% { transform: scale(1); opacity: 0.8; } 50% { transform: scale(1.1); opacity: 1; } 100% { transform: scale(1); opacity: 0.8; } }
     .logo-breathe { animation: breathe 2s infinite ease-in-out; }
     @keyframes marquee { 0% { transform: translateX(100%); } 100% { transform: translateX(-100%); } }
@@ -66,6 +68,7 @@
         .social-float-btn { width: 40px; height: 40px; font-size: 20px; border-radius: 50%; box-shadow: none; }
         .social-float-btn:hover { width: 40px; }
     }
+    /* FAQ Style */
     .faq-item { border-bottom: 1px solid #e5e7eb; transition: all 0.3s ease; }
     .faq-item:last-child { border-bottom: none; }
     .faq-question { cursor: pointer; padding: 16px 0; font-weight: bold; color: #374151; display: flex; justify-content: space-between; align-items: center; user-select: none; }
@@ -87,11 +90,11 @@
   </div>
 
   <div class="social-bar">
-      <a href="https://lin.ee/SDN6jpk" target="_blank" class="social-float-btn bg-[#06C755]" title="加入 LINE@"><i class="fab fa-line"></i></a>
-      <a href="https://www.facebook.com/QPJEWELRY.OFFICIAL" target="_blank" class="social-float-btn bg-[#1877F2]" title="Facebook"><i class="fab fa-facebook-f"></i></a>
-      <a href="https://www.instagram.com/qiaopin.jewelry/" target="_blank" class="social-float-btn bg-gradient-to-tr from-yellow-400 via-red-500 to-purple-500" title="Instagram"><i class="fab fa-instagram"></i></a>
-      <a href="https://www.tiktok.com/@qpdiamond666" target="_blank" class="social-float-btn bg-black" title="TikTok"><i class="fab fa-tiktok"></i></a>
-      <button onclick="window.scrollTo({top: 0, behavior: 'smooth'})" class="social-float-btn bg-yellow-500 border border-yellow-600 hidden md:flex" title="Top"><i class="fas fa-arrow-up"></i></button>
+      <a href="https://lin.ee/SDN6jpk" target="_blank" class="social-float-btn bg-[#06C755]" title="加入 LINE@" aria-label="Line"><i class="fab fa-line"></i></a>
+      <a href="https://www.facebook.com/QPJEWELRY.OFFICIAL" target="_blank" class="social-float-btn bg-[#1877F2]" title="Facebook" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+      <a href="https://www.instagram.com/qiaopin.jewelry/" target="_blank" class="social-float-btn bg-gradient-to-tr from-yellow-400 via-red-500 to-purple-500" title="Instagram" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+      <a href="https://www.tiktok.com/@qpdiamond666" target="_blank" class="social-float-btn bg-black" title="TikTok" aria-label="TikTok"><i class="fab fa-tiktok"></i></a>
+      <button onclick="window.scrollTo({top: 0, behavior: 'smooth'})" class="social-float-btn bg-yellow-500 border border-yellow-600 hidden md:flex" title="Top" aria-label="回到頂部"><i class="fas fa-arrow-up"></i></button>
   </div>
 
   <div id="app">
@@ -99,7 +102,8 @@
       <div class="max-w-7xl mx-auto px-4">
         <div class="flex justify-between h-20 items-center">
           <div class="flex items-center gap-3 cursor-pointer" @click="goHome">
-            <img src="https://drive.google.com/thumbnail?id=16UrCpYWRkyEkvL7M73o0DIAvkKWtF0Lp&sz=w200" class="w-10 h-10 rounded-lg object-cover border border-yellow-500">
+            <img src="https://drive.google.com/thumbnail?id=16UrCpYWRkyEkvL7M73o0DIAvkKWtF0Lp&sz=w200" 
+                 class="w-10 h-10 rounded-lg object-cover border border-yellow-500" alt="巧品珠寶 Logo">
             <div><div class="text-2xl font-bold tracking-wider text-red-900">巧品珠寶</div><div class="text-xs text-gray-500">HUANG JIA FEI LI</div></div>
           </div>
           <div class="flex items-center space-x-4">
@@ -118,7 +122,7 @@
     <div v-show="view === 'home'">
       <header class="relative h-[400px] md:h-[500px] flex items-center justify-center overflow-hidden bg-gray-900">
         <transition name="fade">
-           <img v-if="heroImages.length > 0" :key="currentHeroIndex" :src="currentHeroImage" class="absolute inset-0 w-full h-full object-cover opacity-70" @error="handleImgError">
+           <img v-if="heroImages.length > 0" :key="currentHeroIndex" :src="currentHeroImage" class="absolute inset-0 w-full h-full object-cover opacity-70" @error="handleImgError" alt="Banner Image">
         </transition>
         <div v-if="heroImages.length === 0" class="absolute inset-0 bg-gradient-to-r from-gray-900 to-red-900 opacity-90"></div>
         <div class="relative z-10 text-center text-white px-4 max-w-4xl">
@@ -198,7 +202,7 @@
                <div v-for="article in visibleArticles" :key="article.id" class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden hover:shadow-md transition cursor-default group">
                   <div class="h-48 bg-gray-200 relative overflow-hidden cursor-pointer" @click.stop="openArticle(article, $event)">
                      <div class="absolute inset-0 flex items-center justify-center text-gray-400"><i class="fas fa-image text-3xl"></i></div>
-                     <img :src="article.image || 'https://via.placeholder.com/600x400?text=No+Image'" class="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" :class="article.imgLoaded ? 'opacity-100' : 'opacity-0'" @load="article.imgLoaded = true" @error="article.imgLoaded = false">
+                     <img :src="article.image || 'https://via.placeholder.com/600x400?text=No+Image'" class="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" :class="article.imgLoaded ? 'opacity-100' : 'opacity-0'" @load="article.imgLoaded = true" @error="article.imgLoaded = false" alt="Article Thumbnail">
                      <div class="absolute top-0 right-0 bg-red-800 text-white text-xs font-bold px-3 py-1 rounded-bl-lg">{{ article.date }}</div>
                   </div>
                   <div class="p-5">
@@ -246,8 +250,8 @@
                </div>
                <div class="space-y-3">
                  <div class="flex gap-2">
-                   <select v-model="calcMetal" class="bg-gray-800 border-gray-700 rounded p-3 text-base w-1/3 outline-none"><option value="24K">24K</option><option value="18K">18K</option><option value="Pt">鉑金</option></select>
-                   <input type="number" v-model="calcWeight" class="w-full bg-gray-800 border-gray-700 rounded p-3 text-base text-right font-nums outline-none" placeholder="輸入重量">
+                   <select v-model="calcMetal" class="bg-gray-800 border-gray-700 rounded p-3 text-base w-1/3 outline-none" aria-label="選擇金屬類型"><option value="24K">24K</option><option value="18K">18K</option><option value="Pt">鉑金</option></select>
+                   <input type="number" v-model="calcWeight" class="w-full bg-gray-800 border-gray-700 rounded p-3 text-base text-right font-nums outline-none" placeholder="輸入重量" aria-label="輸入重量">
                  </div>
                  <div class="flex justify-between items-center bg-gray-800/50 p-3 rounded border border-gray-700">
                    <span class="text-sm text-gray-400">預估價值</span><span class="text-2xl font-bold text-amber-400">$ {{ calculateTotal }}</span>
@@ -260,7 +264,7 @@
                 <h3 class="font-bold text-gray-800 mb-4 border-l-4 border-red-800 pl-2">聯絡我們</h3>
                 <div class="space-y-4 text-sm text-gray-700">
                     <div class="flex items-start gap-3"><i class="fas fa-clock text-red-800 mt-1"></i><div><span class="font-bold block text-gray-900">營業時間</span>貴金屬買賣 11:00~03:30</div></div>
-                    <div class="flex items-start gap-3"><i class="fas fa-map-marker-alt text-red-800 mt-1"></i><div><span class="font-bold block text-gray-900">門市地址</span><a href="https://maps.google.com/?q=台北市大安區濟南路三段62-1號1樓" target="_blank" class="hover:text-red-800 transition">台北市大安區濟南路三段62-1號1樓</a></div></div>
+                    <div class="flex items-start gap-3"><i class="fas fa-map-marker-alt text-red-800 mt-1"></i><div><span class="font-bold block text-gray-900">門市地址</span><a href="https://www.google.com/maps/search/?api=1&query=台北市大安區濟南路三段62-1號1樓" target="_blank" class="hover:text-red-800 transition">台北市大安區濟南路三段62-1號1樓</a></div></div>
                     <div class="flex items-start gap-3"><i class="fas fa-phone-alt text-red-800 mt-1"></i><div><span class="font-bold block text-gray-900">預約專線</span><a href="tel:0986821626" class="text-lg font-bold text-red-800">0986-821-626</a></div></div>
                 </div>
              </div>
@@ -275,7 +279,7 @@
          <article class="bg-white rounded-2xl shadow-xl overflow-hidden border border-gray-100">
            <div class="w-full h-[300px] md:h-[400px] bg-gray-200 relative bg-gray-100">
              <div class="absolute inset-0 flex items-center justify-center text-gray-400"><i class="fas fa-image text-4xl"></i></div>
-             <img v-if="currentArticle.image" :src="currentArticle.image" class="absolute inset-0 w-full h-full object-cover transition-opacity duration-500" :class="currentImgLoaded ? 'opacity-100' : 'opacity-0'" @load="currentImgLoaded = true" @error="currentImgLoaded = false">
+             <img v-if="currentArticle.image" :src="currentArticle.image" class="absolute inset-0 w-full h-full object-cover transition-opacity duration-500" :class="currentImgLoaded ? 'opacity-100' : 'opacity-0'" @load="currentImgLoaded = true" @error="currentImgLoaded = false" alt="Cover Image">
            </div>
            <div class="p-8 md:p-12">
              <div class="flex items-center gap-4 mb-6 text-sm text-gray-500"><span class="bg-red-100 text-red-800 px-3 py-1 rounded-full text-xs font-bold">知識專欄</span><span>{{ currentArticle.date }}</span></div>
@@ -298,7 +302,7 @@
     const { createApp } = Vue;
 
     // ★★★ 務必替換為您的 GAS 部署網址 ★★★
-    const GAS_API_URL = 'https://script.google.com/macros/s/AKfycbygJxxjK_2wd3hUB-M0XjU3SxusAWPpW99EPPqBIJjMrLWItT-4LHxSzYFatLQ-RvC9Qg/exec';
+    const GAS_API_URL = 'https://script.google.com/macros/s/AKfycbz......(請換成您的網址)....../exec';
 
     createApp({
       data() {
@@ -321,7 +325,8 @@
         silverUnitText() { return this.unit === 'qian' ? '公斤' : '公克'; },
         currentHeroImage() { 
            if(this.heroImages.length === 0) return 'https://via.placeholder.com/1920x600?text=No+Images';
-           return this.heroImages[this.currentHeroIndex]; 
+           // ★★★ 自動優化 Hero 圖片 ★★★
+           return this.getOptimizedUrl(this.heroImages[this.currentHeroIndex], 1200); 
         },
         calculateTotal() {
           if(!this.calcWeight) return 0;
@@ -334,6 +339,19 @@
         visibleDailyData() { return this.dailyData.slice(0, this.visibleQuoteCount); }
       },
       methods: {
+        // ★★★ 核心圖片優化函式 (使用 wsrv.nl) ★★★
+        getOptimizedUrl(originalUrl, width = 800) {
+            if (!originalUrl) return "https://via.placeholder.com/600x400?text=No+Image";
+            let id = "";
+            const match = originalUrl.match(/id=([-\w]{25,})/) || originalUrl.match(/\/d\/([-\w]{25,})/);
+            if (match) {
+                id = match[1];
+                // 使用 wsrv.nl 加速、轉 WebP、快取
+                return `https://wsrv.nl/?url=https://drive.google.com/uc?id=${id}&w=${width}&output=webp&q=80&n=-1`;
+            }
+            return originalUrl;
+        },
+
         toggleFaq(event) { event.currentTarget.classList.toggle('active'); },
         scrollTo(id) { 
           if(this.view !== 'home') {
@@ -366,8 +384,10 @@
             navigator.clipboard.writeText(msg).then(() => { alert("已複製預約訊息！即將為您打開 LINE..."); window.open("https://lin.ee/SDN6jpk", "_blank"); }).catch(err => { window.open("https://lin.ee/SDN6jpk", "_blank"); });
         },
         handleImgError(e) { e.target.src = "https://via.placeholder.com/600x400?text=No+Image"; }, 
+        
         loadMoreArticles() { this.visibleCount += 10; },
         loadMoreQuotes() { this.visibleQuoteCount += 20; },
+        
         initChart(labels, data) {
           const ctx = document.getElementById('mainChart'); if(!ctx || !data || data.length === 0) return;
           if(this.chartInstance) this.chartInstance.destroy();
@@ -381,7 +401,12 @@
         },
         openArticle(article, event) {
            if (!event || !event.isTrusted || !this.canClick) return;
-           this.currentArticle = article; this.currentImgLoaded = false; this.view = 'article';
+           
+           // ★★★ 點開文章時也即時優化圖片 ★★★
+           let fastImage = this.getOptimizedUrl(article.image, 800);
+           this.currentArticle = { ...article, image: fastImage };
+           
+           this.currentImgLoaded = false; this.view = 'article';
            window.history.pushState({}, '', '?p=article&id=' + article.id); window.scrollTo(0, 0);
         },
         unlockBody() {
@@ -391,7 +416,6 @@
         },
         updateChartOnUnitChange() { if(this.rawChartData && this.rawChartData.length > 0 && this.view === 'home') { this.initChart(this.chartLabels, this.rawChartData); } },
         
-        // ★★★ 新增：透過 fetch 抓取 GAS 資料 ★★★
         async fetchData() {
             try {
                 // 1. 取得初始化資料 (Rates & FAQ)
@@ -419,7 +443,13 @@
                 // 3. 取得文章
                 const articleRes = await fetch(GAS_API_URL + '?action=getArticles');
                 const articleList = await articleRes.json();
-                this.articles = (articleList || []).map(a => ({ ...a, imgLoaded: false }));
+                
+                // ★★★ 預先優化列表縮圖 (寬度600) ★★★
+                this.articles = (articleList || []).map(a => ({ 
+                    ...a, 
+                    image: this.getOptimizedUrl(a.image, 600),
+                    imgLoaded: false 
+                }));
 
                 // 解鎖畫面
                 this.unlockBody();
