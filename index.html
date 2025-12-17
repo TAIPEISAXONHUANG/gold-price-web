@@ -20,19 +20,29 @@
   <link rel="preconnect" href="https://cdn.tailwindcss.com">
 
   <style>
-    /* 預先定義骨架樣式，提升 FCP */
     body { margin: 0; font-family: system-ui, -apple-system, sans-serif; background-color: #f3f4f6; color: #1f2937; }
-    .nav-skeleton { height: 80px; background: white; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); position: sticky; top: 0; z-index: 40; }
-    .hero-skeleton { height: 400px; background: #111827; position: relative; overflow: hidden; display: flex; align-items: center; justify-content: center; color: white; text-align: center; }
+    /* 預先撐開高度，避免 CLS */
+    .hero-section { position: relative; height: 400px; background-color: #111827; overflow: hidden; display: flex; align-items: center; justify-content: center; text-align: center; color: white; }
+    .hero-img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0.7; }
+    .nav-sticky { position: sticky; top: 0; z-index: 40; background: white; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); height: 80px; }
+    
     .logo-breathe { animation: breathe 2s infinite ease-in-out; }
     @keyframes breathe { 0% { transform: scale(1); opacity: 0.8; } 50% { transform: scale(1.1); opacity: 1; } 100% { transform: scale(1); opacity: 0.8; } }
-    /* 避免圖片載入時的跳動 */
-    img { content-visibility: auto; } 
+    
+    /* 隱藏未編譯的 Vue 模板 */
+    [v-cloak] { display: none; }
+    
+    /* FAQ 動畫 */
+    .faq-answer { max-height: 0; overflow: hidden; transition: max-height 0.3s ease-out; }
+    .faq-item.active .faq-answer { max-height: 500px; padding-bottom: 16px; }
+    .faq-icon { transition: transform 0.3s; }
+    .faq-item.active .faq-icon { transform: rotate(180deg); }
   </style>
 
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet" media="print" onload="this.media='all'">
+  <noscript><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"></noscript>
 </head>
 
 <body class="locked">
@@ -41,7 +51,7 @@
       <div class="text-center">
           <img src="https://wsrv.nl/?url=https://drive.google.com/uc?id=16UrCpYWRkyEkvL7M73o0DIAvkKWtF0Lp&w=150&output=webp&q=60" 
                class="w-20 h-20 rounded-xl mb-4 mx-auto logo-breathe shadow-xl" 
-               alt="巧品珠寶" width="80" height="80">
+               alt="巧品珠寶 Loading" width="80" height="80">
           <p class="text-gray-500 text-sm font-bold tracking-widest">巧品珠寶 · 誠信估價中...</p>
       </div>
   </div>
@@ -54,12 +64,12 @@
       <button onclick="window.scrollTo({top: 0, behavior: 'smooth'})" class="w-12 h-12 flex items-center justify-center text-white rounded-l-lg shadow-md bg-yellow-500 border border-yellow-600 hidden md:flex transition-all hover:w-14" aria-label="Top"><i class="fas fa-arrow-up text-xl"></i></button>
   </div>
 
-  <div id="app">
-    <nav class="nav-skeleton bg-white shadow-lg sticky top-0 z-40">
+  <div id="app" v-cloak>
+    <nav class="nav-sticky">
       <div class="max-w-7xl mx-auto px-4 h-full flex justify-between items-center">
         <div class="flex items-center gap-3 cursor-pointer" @click="goHome">
           <img src="https://wsrv.nl/?url=https://drive.google.com/uc?id=16UrCpYWRkyEkvL7M73o0DIAvkKWtF0Lp&w=100&output=webp" 
-               class="w-10 h-10 rounded-lg object-cover border border-yellow-500" alt="Logo" width="40" height="40">
+               class="w-10 h-10 rounded-lg object-cover border border-yellow-500" alt="巧品珠寶 Logo" width="40" height="40">
           <div><div class="text-2xl font-bold tracking-wider text-red-900">巧品珠寶</div><div class="text-xs text-gray-500">HUANG JIA FEI LI</div></div>
         </div>
         <div class="flex items-center space-x-4">
@@ -75,16 +85,16 @@
     </div>
 
     <div v-show="view === 'home'">
-      <header class="hero-skeleton">
+      <header class="hero-section">
         <transition name="fade">
            <img v-if="heroImages.length > 0" 
                 :key="currentHeroIndex" 
                 :src="getOptimizedUrl(heroImages[currentHeroIndex], 1200)"
                 :srcset="`${getOptimizedUrl(heroImages[currentHeroIndex], 450)} 450w, ${getOptimizedUrl(heroImages[currentHeroIndex], 800)} 800w, ${getOptimizedUrl(heroImages[currentHeroIndex], 1200)} 1200w`"
                 sizes="(max-width: 600px) 450px, (max-width: 1024px) 800px, 1200px"
-                class="absolute inset-0 w-full h-full object-cover opacity-70" 
+                class="hero-img"
                 @error="handleImgError" 
-                alt="今日金價 Banner"
+                alt="今日金價 Banner" 
                 fetchpriority="high">
         </transition>
         <div v-if="heroImages.length === 0" class="absolute inset-0 bg-gradient-to-r from-gray-900 to-red-900 opacity-90"></div>
@@ -271,9 +281,11 @@
 
   <script>
     const { createApp } = Vue;
-
-    // ★★★ 您的 GAS 網址 (請確認是否正確) ★★★
     const GAS_API_URL = 'https://script.google.com/macros/s/AKfycbygJxxjK_2wd3hUB-M0XjU3SxusAWPpW99EPPqBIJjMrLWItT-4LHxSzYFatLQ-RvC9Qg/exec';
+
+    // ★★★ 本地快取邏輯：讓網頁第一次載入後，下次秒開 ★★★
+    const CACHE_KEY = 'gold_price_cache';
+    const CACHE_DURATION = 1000 * 60 * 30; // 30 分鐘快取
 
     createApp({
       data() {
@@ -281,7 +293,9 @@
           view: 'home', 
           currentArticle: null,
           currentImgLoaded: false, 
-          heroImages: [], currentHeroIndex: 0, updateTime: '載入中...', unit: 'qian', loading: false,
+          // ★★★ 預先填入第一張大圖的 Drive ID，不用等 API (這是目前第一張圖的 ID) ★★★
+          heroImages: ['https://drive.google.com/thumbnail?id=1ASz1v5ZBQ-WV572r-BC4gZRuraywgKKv'], 
+          currentHeroIndex: 0, updateTime: '載入中...', unit: 'qian', loading: false,
           calcUnit: 'qian', calcMetal: '24K', calcWeight: '',
           rates: { '24K': {buy:0, sell:0}, '18K': {buy:0}, 'Pt': {buy:0}, 'Pd': {buy:0}, '22K': {buy:0}, 'Ag': {buy999:0} },
           dailyData: [], rawChartData: [], chartLabels: [], chartInstance: null,
@@ -296,7 +310,6 @@
         silverUnitText() { return this.unit === 'qian' ? '公斤' : '公克'; },
         currentHeroImage() { 
            if(this.heroImages.length === 0) return 'https://via.placeholder.com/1920x600?text=No+Images';
-           // 這裡只負責回傳一個預設的大圖連結，主要依賴 srcset 處理響應式
            return this.getOptimizedUrl(this.heroImages[this.currentHeroIndex], 1200); 
         },
         calculateTotal() {
@@ -310,15 +323,12 @@
         visibleDailyData() { return this.dailyData.slice(0, this.visibleQuoteCount); }
       },
       methods: {
-        // ★★★ 核心圖片優化函式 (wsrv.nl) ★★★
-        // q=品質，width=寬度
         getOptimizedUrl(originalUrl, width = 800) {
             if (!originalUrl) return "https://via.placeholder.com/600x400?text=No+Image";
             let id = "";
             const match = originalUrl.match(/id=([-\w]{25,})/) || originalUrl.match(/\/d\/([-\w]{25,})/);
             if (match) {
                 id = match[1];
-                // 手機版(寬度小於600)時，品質降為65以極致加速
                 let quality = width <= 600 ? 65 : 75;
                 return `https://wsrv.nl/?url=https://drive.google.com/uc?id=${id}&w=${width}&output=webp&q=${quality}&n=-1`;
             }
@@ -384,39 +394,76 @@
         updateChartOnUnitChange() { if(this.rawChartData && this.rawChartData.length > 0 && this.view === 'home') { this.initChart(this.chartLabels, this.rawChartData); } },
         
         async fetchData() {
+            // ★★★ 優先從快取讀取，實現秒開 ★★★
+            const cached = localStorage.getItem(CACHE_KEY);
+            if (cached) {
+                const { data, timestamp } = JSON.parse(cached);
+                if (Date.now() - timestamp < CACHE_DURATION) {
+                    this.applyData(data);
+                    // 即使有快取，我們也可以在背景默默更新 (Optional: 如果需要即時性高)
+                    // 但為了省流量，這裡設定如果快取有效就不發請求
+                    this.unlockBody();
+                    return; 
+                }
+            }
+
             try {
+                // 1. Init Data
                 const initRes = await fetch(GAS_API_URL + '?action=getInitData');
                 const initData = await initRes.json();
-                if(initData.rates) {
-                    this.rates = initData.rates.rates;
-                    this.updateTime = initData.rates.updatedAt;
-                    if(initData.rates.heroImages) { this.heroImages = initData.rates.heroImages; this.startCarousel(); }
-                }
-                if(initData.faq) this.faqList = initData.faq;
-
+                
+                // 2. Chart & Table
                 this.loading = true;
                 const chartRes = await fetch(GAS_API_URL + '?action=getChartData');
                 const chartData = await chartRes.json();
-                this.loading = false;
-                if(chartData.dailyTable) this.dailyData = chartData.dailyTable;
-                if(chartData.chart) { 
-                    this.rawChartData = chartData.chart.data; 
-                    this.chartLabels = chartData.chart.labels;
-                    if(this.view === 'home') this.initChart(this.chartLabels, this.rawChartData);
-                }
-
+                
+                // 3. Articles
                 const articleRes = await fetch(GAS_API_URL + '?action=getArticles');
                 const articleList = await articleRes.json();
+
+                const fullData = { initData, chartData, articleList };
                 
-                // ★★★ 優化 4: 列表圖片使用較小的縮圖 (w=450) 以節省流量 ★★★
-                this.articles = (articleList || []).map(a => ({ 
-                    ...a, 
-                    image: this.getOptimizedUrl(a.image, 450),
-                    imgLoaded: false 
+                // 儲存到快取
+                localStorage.setItem(CACHE_KEY, JSON.stringify({
+                    timestamp: Date.now(),
+                    data: fullData
                 }));
 
+                this.applyData(fullData);
                 this.unlockBody();
+
             } catch(e) { console.error("Fetch Error:", e); this.unlockBody(); }
+        },
+
+        applyData(allData) {
+            const { initData, chartData, articleList } = allData;
+            
+            // Apply Init
+            if(initData.rates) {
+                this.rates = initData.rates.rates;
+                this.updateTime = initData.rates.updatedAt;
+                if(initData.rates.heroImages && initData.rates.heroImages.length > 0) { 
+                    this.heroImages = initData.rates.heroImages; 
+                    this.startCarousel(); 
+                }
+            }
+            if(initData.faq) this.faqList = initData.faq;
+
+            // Apply Chart
+            this.loading = false;
+            if(chartData.dailyTable) this.dailyData = chartData.dailyTable;
+            if(chartData.chart) { 
+                this.rawChartData = chartData.chart.data; 
+                this.chartLabels = chartData.chart.labels;
+                if(this.view === 'home') this.$nextTick(() => this.initChart(this.chartLabels, this.rawChartData));
+            }
+
+            // Apply Articles
+            this.articles = (articleList || []).map(a => ({ 
+                ...a, 
+                image: this.getOptimizedUrl(a.image, 600),
+                imgLoaded: false 
+            }));
         }
       },
       watch: { unit() { this.updateChartOnUnitChange(); } },
