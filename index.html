@@ -50,9 +50,7 @@
   </div>
 
   <div class="fixed z-50 transition-all duration-300
-              /* 手機版樣式：固定底部、白色背景、水平排列 */
               bottom-0 left-0 w-full bg-white border-t border-gray-200 flex justify-around items-center p-3 shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.1)]
-              /* 電腦版樣式 (lg)：固定右側、透明背景、垂直排列 */
               lg:w-auto lg:bg-transparent lg:border-none lg:flex-col lg:top-[40%] lg:right-0 lg:left-auto lg:bottom-auto lg:gap-2 lg:p-0 lg:shadow-none">
       
       <a href="https://lin.ee/SDN6jpk" target="_blank" 
@@ -263,9 +261,9 @@
           </section>
         </div>
 
-        <aside class="lg:col-span-4 space-y-6">
-          <div class="hidden lg:block space-y-6">
-              <div id="rates-desktop" class="bg-white rounded-2xl shadow-xl border-t-4 border-red-800 sticky top-24 overflow-hidden">
+        <aside class="lg:col-span-4 hidden lg:block">
+          <div class="sticky top-24 space-y-6">
+              <div id="rates-desktop" class="bg-white rounded-2xl shadow-xl border-t-4 border-red-800 overflow-hidden">
                  <div class="p-5 bg-gradient-to-b from-gray-50 to-white border-b flex justify-between items-start">
                    <div><h3 class="font-bold text-red-900 text-lg">今日牌價</h3><p class="text-xs text-gray-500 mt-1">{{ updateTime }}</p></div>
                    <button @click="toggleUnit" class="text-xs bg-gray-800 text-white hover:bg-black px-3 py-1.5 rounded shadow transition">單位: <span class="text-amber-400 font-bold">{{ unitText }}</span></button>
@@ -304,8 +302,8 @@
                    <button v-else class="w-full bg-amber-500 text-gray-900 font-bold py-3 rounded text-base hover:bg-amber-400 shadow-lg">立即致電鎖價</button>
                  </div>
               </div>
-          </div>
-          <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+
+              <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
                 <h3 class="font-bold text-gray-800 mb-4 border-l-4 border-red-800 pl-2">聯絡我們</h3>
                 <div class="space-y-4 text-sm text-gray-700">
                     <div class="flex items-start gap-3"><i class="fas fa-clock text-red-800 mt-1"></i><div><span class="font-bold block text-gray-900">營業時間</span>貴金屬買賣 11:00~03:30</div></div>
@@ -313,7 +311,7 @@
                     <div class="flex items-start gap-3"><i class="fas fa-phone-alt text-red-800 mt-1"></i><div><span class="font-bold block text-gray-900">預約專線</span><a href="tel:0986821626" class="text-lg font-bold text-red-800">0986-821-626</a></div></div>
                 </div>
              </div>
-          
+          </div>
         </aside>
       </main>
     </div>
@@ -367,7 +365,7 @@
           view: 'home', 
           currentArticle: null,
           currentImgLoaded: false, 
-          // 資料預設值 (Hardcoded for LCP)
+          // 資料預設值
           heroImages: ['https://wsrv.nl/?url=https://drive.google.com/uc?id=1ASz1v5ZBQ-WV572r-BC4gZRuraywgKKv&w=1200&output=webp&q=75'], 
           updateTime: '最新即時報價', 
           rates: { '24K': {buy: 16141, sell: 16571, buyDiff: 0, sellDiff: 0}, '18K': {buy: 12105, sell: 0}, 'Pt': {buy: 6311, sell: 7291}, 'Ag': {buy999: 57717, sell999: 69539} },
@@ -418,12 +416,11 @@
              this.$nextTick(() => { const el = document.getElementById(id); if(el) el.scrollIntoView({ behavior: 'smooth' }); });
           } else { const el = document.getElementById(id); if(el) el.scrollIntoView({ behavior: 'smooth' }); }
         },
-        // ★★★ 新增：智慧捲動到金價區塊 (自動判斷手機/電腦 ID) ★★★
+        // 智慧捲動
         scrollToRates() {
            const targetId = window.innerWidth < 1024 ? 'rates-mobile' : 'rates-desktop';
            this.scrollTo(targetId);
         },
-        // ★★★ 新增：智慧捲動到試算表 (自動判斷手機/電腦 ID) ★★★
         scrollToCalc() {
            const targetId = window.innerWidth < 1024 ? 'calculator-section-mobile' : 'calculator-section-desktop';
            this.scrollTo(targetId);
