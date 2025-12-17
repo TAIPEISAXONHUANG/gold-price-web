@@ -8,7 +8,6 @@
   <meta name="description" content="台北大安區實體店面，專營黃金回收、白金、K金、鑽石買賣。提供每日最新即時金價查詢與線上試算。誠信經營十餘年，高價現金回收，歡迎預約估價。">
   <meta name="keywords" content="每日金價, 今天金價多少, 金價查詢, 台灣金價, 黃金回收, K金回收, 白金回收, 鉑金回收, 飾金回收, 舊金回收, 黃金一錢多少, 台北銀樓推薦, 高價收購黃金, 貴金屬買賣, 鑽石回收, 巧品珠寶">
   <meta name="author" content="巧品珠寶 HUANG JIA FEI LI">
-  <meta name="robots" content="index, follow, max-image-preview:large">
   
   <meta property="og:type" content="business.business">
   <meta property="og:title" content="巧品珠寶 | 台北高價黃金回收">
@@ -23,13 +22,7 @@
 
   <style>
     :root { --brand-red: #8B0000; --brand-gold: #D4AF37; }
-    
-    body.locked {
-        overflow: hidden !important;
-        height: 100vh !important;
-        position: fixed;
-        width: 100%;
-    }
+    body.locked { overflow: hidden !important; height: 100vh !important; position: fixed; width: 100%; }
     html, body { overflow-anchor: none; scroll-behavior: auto !important; }
     .interaction-disabled { pointer-events: none !important; cursor: wait !important; }
     .text-gold { color: var(--brand-gold); }
@@ -46,15 +39,8 @@
     .opacity-100 { opacity: 1; }
     .fade-enter-active, .fade-leave-active { transition: opacity 1.5s ease; }
     .fade-enter-from, .fade-leave-to { opacity: 0; }
-    
-    #loading-mask {
-        position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-        background: #fff; z-index: 9999;
-        display: flex; align-items: center; justify-content: center;
-        transition: opacity 0.5s ease;
-    }
+    #loading-mask { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #fff; z-index: 9999; display: flex; align-items: center; justify-content: center; transition: opacity 0.5s ease; }
     #loading-mask.fade-out { opacity: 0; pointer-events: none; }
-    
     @keyframes breathe { 0% { transform: scale(1); opacity: 0.8; } 50% { transform: scale(1.1); opacity: 1; } 100% { transform: scale(1); opacity: 0.8; } }
     .logo-breathe { animation: breathe 2s infinite ease-in-out; }
     @keyframes marquee { 0% { transform: translateX(100%); } 100% { transform: translateX(-100%); } }
@@ -68,7 +54,6 @@
         .social-float-btn { width: 40px; height: 40px; font-size: 20px; border-radius: 50%; box-shadow: none; }
         .social-float-btn:hover { width: 40px; }
     }
-    /* FAQ Style */
     .faq-item { border-bottom: 1px solid #e5e7eb; transition: all 0.3s ease; }
     .faq-item:last-child { border-bottom: none; }
     .faq-question { cursor: pointer; padding: 16px 0; font-weight: bold; color: #374151; display: flex; justify-content: space-between; align-items: center; user-select: none; }
@@ -301,7 +286,8 @@
   <script>
     const { createApp } = Vue;
 
-    // ★★★ 務必替換為您的 GAS 部署網址 ★★★
+    // ★★★ 務必替換為您剛剛在 GAS 部署後取得的網址！ ★★★
+    // 範例：'https://script.google.com/macros/s/AKfycby..../exec'
     const GAS_API_URL = 'https://script.google.com/macros/s/AKfycbygJxxjK_2wd3hUB-M0XjU3SxusAWPpW99EPPqBIJjMrLWItT-4LHxSzYFatLQ-RvC9Qg/exec';
 
     createApp({
@@ -325,7 +311,6 @@
         silverUnitText() { return this.unit === 'qian' ? '公斤' : '公克'; },
         currentHeroImage() { 
            if(this.heroImages.length === 0) return 'https://via.placeholder.com/1920x600?text=No+Images';
-           // ★★★ 自動優化 Hero 圖片 ★★★
            return this.getOptimizedUrl(this.heroImages[this.currentHeroIndex], 1200); 
         },
         calculateTotal() {
@@ -339,19 +324,16 @@
         visibleDailyData() { return this.dailyData.slice(0, this.visibleQuoteCount); }
       },
       methods: {
-        // ★★★ 核心圖片優化函式 (使用 wsrv.nl) ★★★
         getOptimizedUrl(originalUrl, width = 800) {
             if (!originalUrl) return "https://via.placeholder.com/600x400?text=No+Image";
             let id = "";
             const match = originalUrl.match(/id=([-\w]{25,})/) || originalUrl.match(/\/d\/([-\w]{25,})/);
             if (match) {
                 id = match[1];
-                // 使用 wsrv.nl 加速、轉 WebP、快取
                 return `https://wsrv.nl/?url=https://drive.google.com/uc?id=${id}&w=${width}&output=webp&q=80&n=-1`;
             }
             return originalUrl;
         },
-
         toggleFaq(event) { event.currentTarget.classList.toggle('active'); },
         scrollTo(id) { 
           if(this.view !== 'home') {
@@ -384,10 +366,8 @@
             navigator.clipboard.writeText(msg).then(() => { alert("已複製預約訊息！即將為您打開 LINE..."); window.open("https://lin.ee/SDN6jpk", "_blank"); }).catch(err => { window.open("https://lin.ee/SDN6jpk", "_blank"); });
         },
         handleImgError(e) { e.target.src = "https://via.placeholder.com/600x400?text=No+Image"; }, 
-        
         loadMoreArticles() { this.visibleCount += 10; },
         loadMoreQuotes() { this.visibleQuoteCount += 20; },
-        
         initChart(labels, data) {
           const ctx = document.getElementById('mainChart'); if(!ctx || !data || data.length === 0) return;
           if(this.chartInstance) this.chartInstance.destroy();
@@ -401,11 +381,8 @@
         },
         openArticle(article, event) {
            if (!event || !event.isTrusted || !this.canClick) return;
-           
-           // ★★★ 點開文章時也即時優化圖片 ★★★
            let fastImage = this.getOptimizedUrl(article.image, 800);
            this.currentArticle = { ...article, image: fastImage };
-           
            this.currentImgLoaded = false; this.view = 'article';
            window.history.pushState({}, '', '?p=article&id=' + article.id); window.scrollTo(0, 0);
         },
@@ -418,7 +395,7 @@
         
         async fetchData() {
             try {
-                // 1. 取得初始化資料 (Rates & FAQ)
+                // 1. Init Data
                 const initRes = await fetch(GAS_API_URL + '?action=getInitData');
                 const initData = await initRes.json();
                 if(initData.rates) {
@@ -428,7 +405,7 @@
                 }
                 if(initData.faq) this.faqList = initData.faq;
 
-                // 2. 取得圖表與報價
+                // 2. Chart & Table
                 this.loading = true;
                 const chartRes = await fetch(GAS_API_URL + '?action=getChartData');
                 const chartData = await chartRes.json();
@@ -440,20 +417,16 @@
                     if(this.view === 'home') this.initChart(this.chartLabels, this.rawChartData);
                 }
 
-                // 3. 取得文章
+                // 3. Articles
                 const articleRes = await fetch(GAS_API_URL + '?action=getArticles');
                 const articleList = await articleRes.json();
-                
-                // ★★★ 預先優化列表縮圖 (寬度600) ★★★
                 this.articles = (articleList || []).map(a => ({ 
                     ...a, 
                     image: this.getOptimizedUrl(a.image, 600),
                     imgLoaded: false 
                 }));
 
-                // 解鎖畫面
                 this.unlockBody();
-                
             } catch(e) { console.error("Fetch Error:", e); this.unlockBody(); }
         }
       },
@@ -462,10 +435,9 @@
           if ('scrollRestoration' in history) { history.scrollRestoration = 'manual'; }
           const url = new URL(window.location.href);
           if (url.searchParams.has('id')) { url.searchParams.delete('id'); url.searchParams.delete('p'); window.history.replaceState(null, null, url.pathname); }
-          this.fetchData(); // 啟動抓取
+          this.fetchData(); 
       }
     }).mount('#app');
   </script>
 </body>
 </html>
-
