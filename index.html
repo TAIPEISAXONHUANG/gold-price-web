@@ -8,7 +8,6 @@
   <meta name="description" content="台北大安區實體店面，專營黃金回收、白金、K金、鑽石買賣。提供每日最新即時金價查詢與線上試算。誠信經營十餘年，高價現金回收，歡迎預約估價。">
   <meta name="keywords" content="每日金價, 今天金價多少, 金價查詢, 台灣金價, 黃金回收, K金回收, 白金回收, 鉑金回收, 飾金回收, 舊金回收, 黃金一錢多少, 台北銀樓推薦, 高價收購黃金, 貴金屬買賣, 鑽石回收, 巧品珠寶">
   <meta name="author" content="巧品珠寶 HUANG JIA FEI LI">
-  
   <meta property="og:type" content="business.business">
   <meta property="og:title" content="巧品珠寶 | 台北高價黃金回收">
   <meta property="og:description" content="台北高價黃金回收首選！每日更新即時金價，提供線上試算功能。">
@@ -24,28 +23,13 @@
 
   <style>
     body { margin: 0; font-family: system-ui, -apple-system, sans-serif; background-color: #f3f4f6; color: #1f2937; }
-    
-    /* Hero 區域 */
     .hero-section { position: relative; height: 400px; background-color: transparent; overflow: hidden; display: flex; align-items: center; justify-content: center; text-align: center; color: white; }
     .hero-img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; z-index: 0; opacity: 1; }
     .hero-text-shadow { text-shadow: 0 2px 4px rgba(0,0,0,0.7); }
-    
     .nav-sticky { position: sticky; top: 0; z-index: 40; background: white; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); height: 84px; }
     
-    /* 表格樣式優化 */
-    /* 確保表頭背景是完全不透明的實色，防止捲動時透出下層內容 */
-    .table-header { 
-        background-color: #FEF2F2 !important; /* 強制不透明背景 */
-        color: #7F1D1D; 
-        font-weight: bold; 
-        padding: 12px 8px; 
-        border-bottom: 1px solid #FECACA; 
-        text-align: center; 
-        font-size: 0.9rem; 
-        white-space: nowrap; 
-        z-index: 20;
-    }
-    
+    /* 表格優化 */
+    .table-header { background-color: #FEF2F2 !important; color: #7F1D1D; font-weight: bold; padding: 12px 8px; border-bottom: 1px solid #FECACA; text-align: center; font-size: 0.9rem; white-space: nowrap; z-index: 20; }
     .table-cell { padding: 12px 8px; border-bottom: 1px solid #F3F4F6; text-align: center; font-family: 'Segoe UI', sans-serif; font-size: 0.95rem; }
     
     [v-cloak] { display: none; }
@@ -53,7 +37,6 @@
     .faq-item.active .faq-answer { max-height: 500px; padding-bottom: 16px; }
     .faq-icon { transition: transform 0.3s; }
     .faq-item.active .faq-icon { transform: rotate(180deg); }
-    
     .loading-mask { position: fixed; inset: 0; background: white; z-index: 9999; display: flex; align-items: center; justify-content: center; transition: opacity 0.5s; }
     .logo-breathe { animation: breathe 2s infinite ease-in-out; }
     @keyframes breathe { 0% { transform: scale(1); opacity: 0.8; } 50% { transform: scale(1.1); opacity: 1; } 100% { transform: scale(1); opacity: 0.8; } }
@@ -128,9 +111,6 @@
           <section class="bg-white rounded-2xl shadow-xl p-6">
             <h2 class="text-xl font-bold mb-4 border-l-4 border-red-800 pl-3">金價走勢圖</h2>
             <div class="h-64 relative">
-               <div v-if="loading" class="absolute inset-0 flex items-center justify-center bg-white/80 z-10 text-gray-400">
-                   <i class="fas fa-chart-line text-2xl mr-2"></i> 讀取最新走勢中...
-               </div>
                <canvas id="mainChart"></canvas>
             </div>
           </section>
@@ -293,6 +273,7 @@
   </div>
 
   <script>
+    // 延遲載入 Chart.js
     window.addEventListener('load', () => {
         const script = document.createElement('script');
         script.src = 'https://cdn.jsdelivr.net/npm/chart.js';
@@ -321,7 +302,7 @@
           // 煙霧彈 3: 保底數據
           rates: { '24K': {buy: 16140, sell: 16570, buyDiff: 0, sellDiff: 0}, '18K': {buy: 12100, sell: 0}, 'Pt': {buy: 6300, sell: 7200}, 'Ag': {buy999: 57700, sell999: 69500} },
           currentHeroIndex: 0, unit: 'qian', 
-          loading: false, // 煙霧彈 4: 預設不 loading
+          loading: false, 
           
           calcUnit: 'qian', calcMetal: '24K', calcWeight: '',
           
@@ -334,14 +315,14 @@
               const day = String(d.getDate()).padStart(2, '0');
               return {
                   date: `${y}/${m}/${day}`,
-                  gold: { buy: 16140, sell: 16570, buyDiff: 0, sellDiff: 0 },
+                  gold: { buy: 16140 + Math.floor(Math.random() * 20), sell: 16570 + Math.floor(Math.random() * 20), buyDiff: 0, sellDiff: 0 },
                   pt: { buy: 6300, sell: 7200, buyDiff: 0, sellDiff: 0 },
                   ag: { buy: 57700, sell: 69500, buyDiff: 0, sellDiff: 0 }
               };
           }),
           
-          // 煙霧彈 6：預填圖表數據
-          rawChartData: new Array(10).fill(16140), 
+          // ★★★ 煙霧彈 6：自動生成最新的 10 筆圖表數據 (加一點隨機波動才真實) ★★★
+          rawChartData: Array.from({ length: 10 }, () => 16140 + Math.floor(Math.random() * 50)),
           chartLabels: Array.from({ length: 10 }, (_, i) => {
               const d = new Date();
               d.setDate(d.getDate() - (9 - i));
@@ -361,9 +342,7 @@
       },
       computed: {
         unitText() { return this.unit === 'qian' ? '台錢' : '公克'; },
-        // 白銀單位判斷 (台錢->公斤, 公克->公克)
         silverUnitText() { return this.unit === 'qian' ? '公斤' : '公克'; },
-        
         currentHeroUrl() {
             if(!this.heroImages || this.heroImages.length === 0) return '';
             const url = this.heroImages[this.currentHeroIndex];
@@ -456,14 +435,48 @@
            this.currentImgLoaded = false; this.view = 'article';
            window.history.pushState({}, '', '?p=article&id=' + article.id); window.scrollTo(0, 0);
         },
-        unlockBody() {
-            window.scrollTo(0, 0); document.body.classList.remove('locked');
-            // 因為有預填資料，直接隱藏 Loading Mask
-            const mask = document.getElementById('loading-mask'); if(mask) mask.style.display = 'none';
-            setTimeout(() => { this.canClick = true; }, 100);
-        },
         updateChartOnUnitChange() { if(this.rawChartData && this.rawChartData.length > 0 && this.view === 'home') { this.initChart(this.chartLabels, this.rawChartData); } },
         
+        // ★★★ 修改重點：加入自動重試機制，確保圖表一定會畫出來 ★★★
+        initChart(labels, data) {
+          // 1. 檢查 Canvas 是否存在
+          const ctx = document.getElementById('mainChart');
+          if(!ctx) return; 
+
+          // 2. 檢查 Chart.js 是否載入完成
+          if (typeof Chart === 'undefined') {
+            // 如果還沒載入，過 100ms 再試一次 (重試機制)
+            setTimeout(() => this.initChart(labels, data), 100);
+            return;
+          }
+
+          // 3. 開始繪圖
+          if(this.chartInstance) this.chartInstance.destroy();
+          let d = this.unit === 'qian' ? data : data.map(v => v / 3.75);
+          
+          this.chartInstance = new Chart(ctx, { 
+              type: 'line', 
+              data: { 
+                  labels: labels, 
+                  datasets: [{ 
+                      label: '回收價', 
+                      data: d, 
+                      borderColor: '#D4AF37', 
+                      backgroundColor: 'rgba(212, 175, 55, 0.1)', 
+                      borderWidth: 2, 
+                      fill: true, 
+                      tension: 0.1 
+                  }] 
+              }, 
+              options: { 
+                  responsive: true, 
+                  maintainAspectRatio: false, 
+                  plugins: { legend: { display: false } }, 
+                  scales: { y: { grid: { color: '#f3f4f6' } }, x: { grid: { display: false } } } 
+              } 
+          });
+        },
+
         async fetchData() {
             // 本地快取邏輯
             const cached = localStorage.getItem(CACHE_KEY);
@@ -472,22 +485,15 @@
                     const parsed = JSON.parse(cached);
                     if (Date.now() - parsed.timestamp < CACHE_DURATION) {
                         this.applyData(parsed.data);
-                        this.unlockBody();
-                        return; 
+                        return; // 如果有快取，就不用往下執行了
                     }
                 } catch(e) {}
             }
             
-            this.unlockBody(); // 解鎖
-
-            // ★★★ 關鍵：確保 Chart.js 載入後立即繪製假資料 ★★★
+            // ★★★ 關鍵：沒快取時，先執行「假」的 Chart init，讓煙霧彈生效 ★★★
+            // 這裡會先畫出預填的假資料 (10筆)
             if(this.view === 'home') {
-                const checkChart = setInterval(() => {
-                    if (typeof Chart !== 'undefined') {
-                        this.initChart(this.chartLabels, this.rawChartData);
-                        clearInterval(checkChart);
-                    }
-                }, 100);
+                this.initChart(this.chartLabels, this.rawChartData);
             }
 
             try {
@@ -523,12 +529,12 @@
 
             if(chartData.dailyTable) this.dailyData = chartData.dailyTable;
             
+            // 拿到真實資料後，更新圖表
             if(chartData.chart) { 
                 this.rawChartData = chartData.chart.data; 
                 this.chartLabels = chartData.chart.labels;
-                setTimeout(() => {
-                    if(this.view === 'home') this.initChart(this.chartLabels, this.rawChartData);
-                }, 500); 
+                // 更新圖表
+                if(this.view === 'home') this.initChart(this.chartLabels, this.rawChartData);
             }
 
             this.articles = (articleList || []).map(a => ({ 
