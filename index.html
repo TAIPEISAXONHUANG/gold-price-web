@@ -8,6 +8,7 @@
   <meta name="description" content="台北大安區實體店面，專營黃金回收、白金、K金、鑽石買賣。提供每日最新即時金價查詢與線上試算。誠信經營十餘年，高價現金回收，歡迎預約估價。">
   <meta name="keywords" content="每日金價, 今天金價多少, 金價查詢, 台灣金價, 黃金回收, K金回收, 白金回收, 鉑金回收, 飾金回收, 舊金回收, 黃金一錢多少, 台北銀樓推薦, 高價收購黃金, 貴金屬買賣, 鑽石回收, 巧品珠寶">
   <meta name="author" content="巧品珠寶 HUANG JIA FEI LI">
+  
   <meta property="og:type" content="business.business">
   <meta property="og:title" content="巧品珠寶 | 台北高價黃金回收">
   <meta property="og:description" content="台北高價黃金回收首選！每日更新即時金價，提供線上試算功能。">
@@ -23,15 +24,43 @@
 
   <style>
     body { margin: 0; font-family: system-ui, -apple-system, sans-serif; background-color: #f3f4f6; color: #1f2937; }
-    .hero-section { position: relative; height: 400px; background-color: transparent; overflow: hidden; display: flex; align-items: center; justify-content: center; text-align: center; color: white; }
-    .hero-img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; z-index: 0; opacity: 1; }
-    .hero-text-shadow { text-shadow: 0 2px 4px rgba(0,0,0,0.7); }
+    
+    /* Hero 區域：透明背景，無色差 */
+    .hero-section { 
+        position: relative; 
+        height: 400px; 
+        background-color: transparent; 
+        overflow: hidden; 
+        display: flex; 
+        align-items: center; 
+        justify-content: center; 
+        text-align: center; 
+        color: white; 
+    }
+    
+    /* Hero 圖片：完全不透明 (opacity: 1) */
+    .hero-img { 
+        position: absolute; 
+        inset: 0; 
+        width: 100%; 
+        height: 100%; 
+        object-fit: cover; 
+        z-index: 0; 
+        opacity: 1; 
+    }
+
+    /* 文字陰影，確保可讀性 */
+    .hero-text-shadow {
+        text-shadow: 0 2px 4px rgba(0,0,0,0.7);
+    }
+
     .nav-sticky { position: sticky; top: 0; z-index: 40; background: white; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); height: 84px; }
     [v-cloak] { display: none; }
     .faq-answer { max-height: 0; overflow: hidden; transition: max-height 0.3s ease-out; }
     .faq-item.active .faq-answer { max-height: 500px; padding-bottom: 16px; }
     .faq-icon { transition: transform 0.3s; }
     .faq-item.active .faq-icon { transform: rotate(180deg); }
+    .loading-mask { position: fixed; inset: 0; background: white; z-index: 9999; display: flex; align-items: center; justify-content: center; transition: opacity 0.5s; }
     .logo-breathe { animation: breathe 2s infinite ease-in-out; }
     @keyframes breathe { 0% { transform: scale(1); opacity: 0.8; } 50% { transform: scale(1.1); opacity: 1; } 100% { transform: scale(1); opacity: 0.8; } }
   </style>
@@ -55,7 +84,8 @@
     <nav class="nav-sticky">
       <div class="max-w-7xl mx-auto px-4 h-full flex justify-between items-center">
         <div class="flex items-center gap-3 cursor-pointer" @click="goHome">
-          <img src="https://wsrv.nl/?url=https://drive.google.com/uc?id=16UrCpYWRkyEkvL7M73o0DIAvkKWtF0Lp&w=100&output=webp" class="w-10 h-10 rounded-lg object-cover border border-yellow-500" alt="巧品珠寶 Logo" width="40" height="40">
+          <img src="https://wsrv.nl/?url=https://drive.google.com/uc?id=16UrCpYWRkyEkvL7M73o0DIAvkKWtF0Lp&w=100&output=webp" 
+               class="w-10 h-10 rounded-lg object-cover border border-yellow-500" alt="巧品珠寶 Logo" width="40" height="40">
           <div><div class="text-2xl font-bold tracking-wider text-red-900">巧品珠寶</div><div class="text-xs text-gray-500">HUANG JIA FEI LI</div></div>
         </div>
         <div class="flex items-center space-x-4">
@@ -88,6 +118,7 @@
                 alt="今日金價 Banner" 
                 fetchpriority="high">
         </transition>
+        
         <div class="relative z-20 text-center text-white px-4 max-w-4xl hero-text-shadow">
           <div class="inline-block px-4 py-1 border-2 border-yellow-400 bg-yellow-900/80 rounded-full text-yellow-300 text-sm font-bold mb-6 backdrop-blur-md shadow-lg">經營十餘年 · 誠信老字號</div>
           <h1 class="text-4xl md:text-6xl font-black mb-6 leading-tight">黃金回收 <span class="text-amber-400">價值最大化</span></h1>
@@ -285,24 +316,31 @@
           // 煙霧彈 3: 保底數據
           rates: { '24K': {buy: 16140, sell: 16570, buyDiff: 0, sellDiff: 0}, '18K': {buy: 12100, sell: 0}, 'Pt': {buy: 6300, sell: 7200}, 'Ag': {buy999: 57700, sell999: 69500} },
           currentHeroIndex: 0, unit: 'qian', 
-          loading: false, // 煙霧彈 4: 預設不 loading，顯示假圖表
+          loading: false, // 煙霧彈 4: 預設不 loading
           
           calcUnit: 'qian', calcMetal: '24K', calcWeight: '',
           
-          // ★★★ 煙霧彈 5：預填 3 筆報價表假資料，讓表格有高度 ★★★
-          dailyData: [
-             {date: '2025/12/17', gold: {buy: 16140, sell: 16570, buyDiff: 0, sellDiff: 0}, pt: {buy: 6300, sell: 7200, buyDiff: 0, sellDiff: 0}, ag: {buy: 57700, sell: 69500, buyDiff: 0, sellDiff: 0}},
-             {date: '2025/12/16', gold: {buy: 16100, sell: 16530, buyDiff: 0, sellDiff: 0}, pt: {buy: 6300, sell: 7200, buyDiff: 0, sellDiff: 0}, ag: {buy: 57700, sell: 69500, buyDiff: 0, sellDiff: 0}},
-             {date: '2025/12/15', gold: {buy: 16080, sell: 16510, buyDiff: 0, sellDiff: 0}, pt: {buy: 6300, sell: 7200, buyDiff: 0, sellDiff: 0}, ag: {buy: 57700, sell: 69500, buyDiff: 0, sellDiff: 0}}
-          ],
+          // ★★★ 煙霧彈 5：自動生成最新的 10 筆預填資料 (確保日期永遠是新的) ★★★
+          dailyData: Array.from({ length: 10 }, (_, i) => {
+              const date = new Date();
+              date.setDate(date.getDate() - i);
+              const y = date.getFullYear();
+              const m = String(date.getMonth() + 1).padStart(2, '0');
+              const d = String(date.getDate()).padStart(2, '0');
+              return {
+                  date: `${y}/${m}/${d}`,
+                  gold: { buy: 16140, sell: 16570, buyDiff: 0, sellDiff: 0 },
+                  pt: { buy: 6300, sell: 7200, buyDiff: 0, sellDiff: 0 },
+                  ag: { buy: 57700, sell: 69500, buyDiff: 0, sellDiff: 0 }
+              };
+          }),
           
-          // ★★★ 煙霧彈 6：預填圖表數據，讓 Chart.js 一開始就有東西畫 ★★★
+          // 煙霧彈 6：預填圖表數據
           rawChartData: [15900, 16000, 16050, 16140, 16140], 
           chartLabels: ['12/13', '12/14', '12/15', '12/16', '12/17'],
-          
           chartInstance: null,
           
-          // ★★★ 煙霧彈 7：預填文章列表 ★★★
+          // 煙霧彈 7：預填文章列表
           articles: [
              { id: 'dummy1', title: '黃金回收注意事項', summary: '收購過程透明公開，不扣重不扣耗損...', date: '2025-12-18', image: 'https://wsrv.nl/?url=https://drive.google.com/uc?id=1ASz1v5ZBQ-WV572r-BC4gZRuraywgKKv&w=400&output=webp&q=70', imgLoaded: true },
              { id: 'dummy2', title: '最新金價走勢分析', summary: '國際金價持續震盪，專家分析未來趨勢...', date: '2025-12-17', image: 'https://wsrv.nl/?url=https://drive.google.com/uc?id=1ASz1v5ZBQ-WV572r-BC4gZRuraywgKKv&w=400&output=webp&q=70', imgLoaded: true }
@@ -409,14 +447,12 @@
         },
         unlockBody() {
             window.scrollTo(0, 0); document.body.classList.remove('locked');
-            // 因為有預填資料，直接隱藏 Loading Mask
             const mask = document.getElementById('loading-mask'); if(mask) mask.style.display = 'none';
             setTimeout(() => { this.canClick = true; }, 100);
         },
         updateChartOnUnitChange() { if(this.rawChartData && this.rawChartData.length > 0 && this.view === 'home') { this.initChart(this.chartLabels, this.rawChartData); } },
         
         async fetchData() {
-            // 本地快取邏輯
             const cached = localStorage.getItem(CACHE_KEY);
             if (cached) {
                 try {
@@ -429,10 +465,8 @@
                 } catch(e) {}
             }
             
-            // ★★★ 關鍵：沒快取時，先執行「假」的 Chart init，讓煙霧彈生效 ★★★
-            this.unlockBody(); // 解鎖，讓使用者看到預填畫面
+            this.unlockBody(); // 解鎖
             if(this.view === 'home') {
-                // 這裡會先畫出預填的假資料
                 setTimeout(() => { this.initChart(this.chartLabels, this.rawChartData); }, 500); 
             }
 
@@ -440,7 +474,6 @@
                 const initRes = await fetch(GAS_API_URL + '?action=getInitData');
                 const initData = await initRes.json();
                 
-                // 注意：這裡不設 loading = true，避免煙霧彈消失
                 const chartRes = await fetch(GAS_API_URL + '?action=getChartData');
                 const chartData = await chartRes.json();
                 
@@ -470,7 +503,6 @@
 
             if(chartData.dailyTable) this.dailyData = chartData.dailyTable;
             
-            // 拿到真實資料後，更新圖表
             if(chartData.chart) { 
                 this.rawChartData = chartData.chart.data; 
                 this.chartLabels = chartData.chart.labels;
