@@ -24,15 +24,37 @@
 
   <style>
     body { margin: 0; font-family: system-ui, -apple-system, sans-serif; background-color: #f3f4f6; color: #1f2937; }
+    
+    /* Hero 區域 */
     .hero-section { position: relative; height: 400px; background-color: transparent; overflow: hidden; display: flex; align-items: center; justify-content: center; text-align: center; color: white; }
     .hero-img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; z-index: 0; opacity: 1; }
     .hero-text-shadow { text-shadow: 0 2px 4px rgba(0,0,0,0.7); }
+    
     .nav-sticky { position: sticky; top: 0; z-index: 40; background: white; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); height: 84px; }
+    
+    /* 表格樣式優化 */
+    /* 確保表頭背景是完全不透明的實色，防止捲動時透出下層內容 */
+    .table-header { 
+        background-color: #FEF2F2 !important; /* 強制不透明背景 */
+        color: #7F1D1D; 
+        font-weight: bold; 
+        padding: 12px 8px; 
+        border-bottom: 1px solid #FECACA; 
+        text-align: center; 
+        font-size: 0.9rem; 
+        white-space: nowrap; 
+        z-index: 20;
+    }
+    
+    .table-cell { padding: 12px 8px; border-bottom: 1px solid #F3F4F6; text-align: center; font-family: 'Segoe UI', sans-serif; font-size: 0.95rem; }
+    
     [v-cloak] { display: none; }
     .faq-answer { max-height: 0; overflow: hidden; transition: max-height 0.3s ease-out; }
     .faq-item.active .faq-answer { max-height: 500px; padding-bottom: 16px; }
     .faq-icon { transition: transform 0.3s; }
     .faq-item.active .faq-icon { transform: rotate(180deg); }
+    
+    .loading-mask { position: fixed; inset: 0; background: white; z-index: 9999; display: flex; align-items: center; justify-content: center; transition: opacity 0.5s; }
     .logo-breathe { animation: breathe 2s infinite ease-in-out; }
     @keyframes breathe { 0% { transform: scale(1); opacity: 0.8; } 50% { transform: scale(1.1); opacity: 1; } 100% { transform: scale(1); opacity: 0.8; } }
   </style>
@@ -120,8 +142,16 @@
              </div>
              <div class="overflow-x-auto max-h-[600px] overflow-y-auto">
                <table class="w-full min-w-[700px]">
-                 <thead class="sticky top-0 z-10 shadow-sm">
-                   <tr><th class="table-header">日期</th><th class="table-header bg-yellow-50 text-yellow-900">黃金(收)</th><th class="table-header bg-yellow-50 text-yellow-900">黃金(賣)</th><th class="table-header">鉑金(收)</th><th class="table-header">鉑金(賣)</th><th class="table-header">白銀(收)</th><th class="table-header">白銀(賣)</th></tr>
+                 <thead class="sticky top-0 z-10 shadow-sm bg-[#FEF2F2]">
+                   <tr>
+                       <th class="table-header">日期</th>
+                       <th class="table-header text-yellow-900">黃金(收)</th>
+                       <th class="table-header text-yellow-900">黃金(賣)</th>
+                       <th class="table-header">鉑金(收)</th>
+                       <th class="table-header">鉑金(賣)</th>
+                       <th class="table-header">白銀(收)<span class="text-xs font-normal block text-gray-500">({{ silverUnitText }})</span></th>
+                       <th class="table-header">白銀(賣)<span class="text-xs font-normal block text-gray-500">({{ silverUnitText }})</span></th>
+                   </tr>
                  </thead>
                  <tbody>
                    <tr v-for="(row, i) in visibleDailyData" :key="i" class="hover:bg-gray-50 transition-colors">
@@ -263,7 +293,6 @@
   </div>
 
   <script>
-    // 延遲載入 Chart.js
     window.addEventListener('load', () => {
         const script = document.createElement('script');
         script.src = 'https://cdn.jsdelivr.net/npm/chart.js';
@@ -296,7 +325,7 @@
           
           calcUnit: 'qian', calcMetal: '24K', calcWeight: '',
           
-          // ★★★ 煙霧彈 5：自動生成最新的 10 筆預填資料 (日期自動倒推) ★★★
+          // ★★★ 煙霧彈 5：自動生成最新的 10 筆預填資料 (確保日期永遠是新的) ★★★
           dailyData: Array.from({ length: 10 }, (_, i) => {
               const d = new Date();
               d.setDate(d.getDate() - i);
@@ -311,11 +340,10 @@
               };
           }),
           
-          // ★★★ 煙霧彈 6：自動生成最新的 10 筆圖表數據 (日期自動倒推) ★★★
+          // 煙霧彈 6：預填圖表數據
           rawChartData: new Array(10).fill(16140), 
           chartLabels: Array.from({ length: 10 }, (_, i) => {
               const d = new Date();
-              // 圖表是左舊右新，所以要反過來
               d.setDate(d.getDate() - (9 - i));
               return `${d.getMonth() + 1}/${d.getDate()}`;
           }),
@@ -333,7 +361,9 @@
       },
       computed: {
         unitText() { return this.unit === 'qian' ? '台錢' : '公克'; },
+        // 白銀單位判斷 (台錢->公斤, 公克->公克)
         silverUnitText() { return this.unit === 'qian' ? '公斤' : '公克'; },
+        
         currentHeroUrl() {
             if(!this.heroImages || this.heroImages.length === 0) return '';
             const url = this.heroImages[this.currentHeroIndex];
@@ -492,12 +522,13 @@
             if(initData.faq) this.faqList = initData.faq;
 
             if(chartData.dailyTable) this.dailyData = chartData.dailyTable;
+            
             if(chartData.chart) { 
                 this.rawChartData = chartData.chart.data; 
                 this.chartLabels = chartData.chart.labels;
                 setTimeout(() => {
                     if(this.view === 'home') this.initChart(this.chartLabels, this.rawChartData);
-                }, 100); 
+                }, 500); 
             }
 
             this.articles = (articleList || []).map(a => ({ 
