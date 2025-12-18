@@ -6,15 +6,7 @@
   
   <title>巧品珠寶 | 台北高價黃金回收．K金白金買賣．即時報價查詢</title>
   <meta name="description" content="台北大安區實體店面，專營黃金回收、白金、K金、鑽石買賣。提供每日最新即時金價查詢與線上試算。誠信經營十餘年，高價現金回收，歡迎預約估價。">
-  <meta name="keywords" content="每日金價, 今天金價多少, 金價查詢, 台灣金價, 黃金回收, K金回收, 白金回收, 鉑金回收, 飾金回收, 舊金回收, 黃金一錢多少, 台北銀樓推薦, 高價收購黃金, 貴金屬買賣, 鑽石回收, 巧品珠寶">
-  <meta name="author" content="巧品珠寶 HUANG JIA FEI LI">
   
-  <meta property="og:type" content="business.business">
-  <meta property="og:title" content="巧品珠寶 | 台北高價黃金回收">
-  <meta property="og:description" content="台北高價黃金回收首選！每日更新即時金價，提供線上試算功能。">
-  <meta property="og:site_name" content="巧品珠寶">
-  <meta property="og:locale" content="zh_TW">
-
   <link rel="preconnect" href="https://wsrv.nl" crossorigin>
   <link rel="preconnect" href="https://script.google.com" crossorigin>
   <link rel="preconnect" href="https://cdn.tailwindcss.com">
@@ -24,43 +16,20 @@
 
   <style>
     body { margin: 0; font-family: system-ui, -apple-system, sans-serif; background-color: #f3f4f6; color: #1f2937; }
-    
-    /* Hero 區域：移除背景色，確保圖片無色差 */
-    .hero-section { 
-        position: relative; 
-        height: 400px; 
-        background-color: transparent; /* 透明背景 */
-        overflow: hidden; 
-        display: flex; 
-        align-items: center; 
-        justify-content: center; 
-        text-align: center; 
-        color: white; 
-    }
-    
-    /* Hero 圖片：透明度改為 1 (完全不透明)，移除所有遮罩 */
-    .hero-img { 
-        position: absolute; 
-        inset: 0; 
-        width: 100%; 
-        height: 100%; 
-        object-fit: cover; 
-        z-index: 0; 
-        opacity: 1; /* ★★★ 關鍵修正：確保圖片原色顯示 ★★★ */
-    }
-
-    /* 為了讓白字在淺色圖片上也能看見，只在文字下方加一點點陰影，而不是蓋住整張圖 */
-    .hero-text-shadow {
-        text-shadow: 0 2px 4px rgba(0,0,0,0.7);
-    }
-
+    .hero-section { position: relative; height: 400px; background-color: #111827; overflow: hidden; display: flex; align-items: center; justify-content: center; text-align: center; color: white; }
+    .hero-img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; opacity: 1; z-index: 0; }
     .nav-sticky { position: sticky; top: 0; z-index: 40; background: white; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); height: 84px; }
+    .hero-overlay { position: absolute; inset: 0; bg-gradient-to-r from-gray-900 to-red-900; opacity: 0.3; z-index: 10; pointer-events: none; }
+    .hero-content { position: relative; z-index: 20; text-shadow: 0 2px 4px rgba(0,0,0,0.5); }
+    
     [v-cloak] { display: none; }
     .faq-answer { max-height: 0; overflow: hidden; transition: max-height 0.3s ease-out; }
     .faq-item.active .faq-answer { max-height: 500px; padding-bottom: 16px; }
     .faq-icon { transition: transform 0.3s; }
     .faq-item.active .faq-icon { transform: rotate(180deg); }
-    .loading-mask { position: fixed; inset: 0; background: white; z-index: 9999; display: flex; align-items: center; justify-content: center; transition: opacity 0.5s; }
+    
+    /* Loading Mask 優化：預設隱藏，只有 JS 判斷需要時才顯示，避免一開始就擋住 */
+    .loading-mask { position: fixed; inset: 0; background: white; z-index: 9999; display: flex; align-items: center; justify-content: center; transition: opacity 0.5s; opacity: 0; pointer-events: none; }
     .logo-breathe { animation: breathe 2s infinite ease-in-out; }
     @keyframes breathe { 0% { transform: scale(1); opacity: 0.8; } 50% { transform: scale(1.1); opacity: 1; } 100% { transform: scale(1); opacity: 0.8; } }
   </style>
@@ -72,44 +41,14 @@
 
 <body class="locked pb-20 lg:pb-0">
 
-  <div id="loading-mask" class="loading-mask">
-      <div class="text-center">
-          <img src="https://wsrv.nl/?url=https://drive.google.com/uc?id=16UrCpYWRkyEkvL7M73o0DIAvkKWtF0Lp&w=150&output=webp&q=60" 
-               class="w-20 h-20 rounded-xl mb-4 mx-auto logo-breathe shadow-xl" 
-               alt="巧品珠寶 Loading" width="80" height="80">
-          <p class="text-gray-500 text-sm font-bold tracking-widest">巧品珠寶·為您尋找即時最優惠的金價中...</p>
-      </div>
-  </div>
-
   <div class="fixed z-50 transition-all duration-300
               bottom-0 left-0 w-full bg-white border-t border-gray-200 flex justify-around items-center p-3 shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.1)]
               lg:w-auto lg:bg-transparent lg:border-none lg:flex-col lg:top-[40%] lg:right-0 lg:left-auto lg:bottom-auto lg:gap-2 lg:p-0 lg:shadow-none">
-      
-      <a href="https://lin.ee/SDN6jpk" target="_blank" 
-         class="flex items-center justify-center text-white shadow-md bg-[#06C755] transition-all 
-                w-10 h-10 rounded-full lg:w-12 lg:h-12 lg:rounded-l-lg lg:rounded-r-none lg:hover:w-14" aria-label="Line">
-         <i class="fab fa-line text-xl lg:text-2xl"></i>
-      </a>
-      <a href="https://www.facebook.com/QPJEWELRY.OFFICIAL" target="_blank" 
-         class="flex items-center justify-center text-white shadow-md bg-[#1877F2] transition-all 
-                w-10 h-10 rounded-full lg:w-12 lg:h-12 lg:rounded-l-lg lg:rounded-r-none lg:hover:w-14" aria-label="Facebook">
-         <i class="fab fa-facebook-f text-lg lg:text-xl"></i>
-      </a>
-      <a href="https://www.instagram.com/qiaopin.jewelry/" target="_blank" 
-         class="flex items-center justify-center text-white shadow-md bg-gradient-to-tr from-yellow-400 via-red-500 to-purple-500 transition-all 
-                w-10 h-10 rounded-full lg:w-12 lg:h-12 lg:rounded-l-lg lg:rounded-r-none lg:hover:w-14" aria-label="Instagram">
-         <i class="fab fa-instagram text-xl lg:text-2xl"></i>
-      </a>
-      <a href="https://www.tiktok.com/@qpdiamond666" target="_blank" 
-         class="flex items-center justify-center text-white shadow-md bg-black transition-all 
-                w-10 h-10 rounded-full lg:w-12 lg:h-12 lg:rounded-l-lg lg:rounded-r-none lg:hover:w-14" aria-label="TikTok">
-         <i class="fab fa-tiktok text-lg lg:text-xl"></i>
-      </a>
-      <button onclick="window.scrollTo({top: 0, behavior: 'smooth'})" 
-              class="flex items-center justify-center text-white shadow-md bg-yellow-500 border border-yellow-600 transition-all 
-                     w-10 h-10 rounded-full lg:w-12 lg:h-12 lg:rounded-l-lg lg:rounded-r-none lg:hover:w-14" aria-label="Top">
-         <i class="fas fa-arrow-up text-lg lg:text-xl"></i>
-      </button>
+      <a href="https://lin.ee/SDN6jpk" target="_blank" class="flex items-center justify-center text-white shadow-md bg-[#06C755] w-10 h-10 rounded-full lg:w-12 lg:h-12 lg:rounded-l-lg lg:rounded-r-none lg:hover:w-14"><i class="fab fa-line text-xl lg:text-2xl"></i></a>
+      <a href="https://www.facebook.com/QPJEWELRY.OFFICIAL" target="_blank" class="flex items-center justify-center text-white shadow-md bg-[#1877F2] w-10 h-10 rounded-full lg:w-12 lg:h-12 lg:rounded-l-lg lg:rounded-r-none lg:hover:w-14"><i class="fab fa-facebook-f text-lg lg:text-xl"></i></a>
+      <a href="https://www.instagram.com/qiaopin.jewelry/" target="_blank" class="flex items-center justify-center text-white shadow-md bg-gradient-to-tr from-yellow-400 via-red-500 to-purple-500 w-10 h-10 rounded-full lg:w-12 lg:h-12 lg:rounded-l-lg lg:rounded-r-none lg:hover:w-14"><i class="fab fa-instagram text-xl lg:text-2xl"></i></a>
+      <a href="https://www.tiktok.com/@qpdiamond666" target="_blank" class="flex items-center justify-center text-white shadow-md bg-black w-10 h-10 rounded-full lg:w-12 lg:h-12 lg:rounded-l-lg lg:rounded-r-none lg:hover:w-14"><i class="fab fa-tiktok text-lg lg:text-xl"></i></a>
+      <button onclick="window.scrollTo({top: 0, behavior: 'smooth'})" class="flex items-center justify-center text-white shadow-md bg-yellow-500 border border-yellow-600 w-10 h-10 rounded-full lg:w-12 lg:h-12 lg:rounded-l-lg lg:rounded-r-none lg:hover:w-14"><i class="fas fa-arrow-up text-lg lg:text-xl"></i></button>
   </div>
 
   <div id="app" v-cloak>
@@ -120,19 +59,15 @@
                class="w-10 h-10 rounded-lg object-cover border border-yellow-500" alt="巧品珠寶 Logo" width="40" height="40">
           <div><div class="text-2xl font-bold tracking-wider text-red-900">巧品珠寶</div><div class="text-xs text-gray-500">HUANG JIA FEI LI</div></div>
         </div>
-
         <div class="flex items-center space-x-4">
           <button @click="scrollToRates" class="font-medium hover:text-red-800 hidden md:block">今日金價</button>
           <button @click="scrollTo('blog-section')" class="font-medium hover:text-red-800 hidden md:block">知識專欄</button>
-          
           <div class="flex flex-col items-end">
               <a href="tel:0986821626" class="flex items-center gap-2 bg-red-50 px-3 py-1 rounded-full border border-red-100 hover:bg-red-100 transition mb-1">
-                  <i class="fas fa-phone-alt text-red-800 text-xs"></i>
-                  <span class="font-bold text-red-900 font-nums text-sm">0986-821-626</span>
+                  <i class="fas fa-phone-alt text-red-800 text-xs"></i><span class="font-bold text-red-900 font-nums text-sm">0986-821-626</span>
               </a>
               <a href="https://maps.google.com/?q=台北市大安區濟南路三段62-1號1樓" target="_blank" class="flex items-center gap-1 text-gray-500 hover:text-red-800 transition text-[10px] md:text-xs">
-                  <i class="fas fa-map-marker-alt text-red-600"></i>
-                  <span>大安區濟南路三段62-1號</span>
+                  <i class="fas fa-map-marker-alt text-red-600"></i><span>大安區濟南路三段62-1號</span>
               </a>
           </div>
         </div>
@@ -146,16 +81,11 @@
     <div v-show="view === 'home'">
       <header class="hero-section">
         <transition name="fade">
-           <img src="https://wsrv.nl/?url=https://drive.google.com/uc?id=1ASz1v5ZBQ-WV572r-BC4gZRuraywgKKv&w=600&output=webp&q=75"
-                srcset="https://wsrv.nl/?url=https://drive.google.com/uc?id=1ASz1v5ZBQ-WV572r-BC4gZRuraywgKKv&w=600&output=webp&q=75 600w, 
-                        https://wsrv.nl/?url=https://drive.google.com/uc?id=1ASz1v5ZBQ-WV572r-BC4gZRuraywgKKv&w=1200&output=webp&q=75 1200w"
-                sizes="(max-width: 600px) 100vw, 1200px"
-                class="hero-img"
-                alt="今日金價 Banner" 
-                fetchpriority="high">
+           <img v-if="currentHeroUrl" :src="currentHeroUrl" class="hero-img" alt="今日金價 Banner" fetchpriority="high">
         </transition>
+        <div class="absolute inset-0 bg-black/10 z-10"></div>
         
-        <div class="relative z-20 text-center text-white px-4 max-w-4xl hero-text-shadow">
+        <div class="hero-content text-center text-white px-4 max-w-4xl">
           <div class="inline-block px-4 py-1 border-2 border-yellow-400 bg-yellow-900/80 rounded-full text-yellow-300 text-sm font-bold mb-6 backdrop-blur-md shadow-lg">經營十餘年 · 誠信老字號</div>
           <h1 class="text-4xl md:text-6xl font-black mb-6 leading-tight">黃金回收 <span class="text-amber-400">價值最大化</span></h1>
           <div class="flex flex-col sm:flex-row gap-4 justify-center">
@@ -170,8 +100,9 @@
           <section class="bg-white rounded-2xl shadow-xl p-6">
             <h2 class="text-xl font-bold mb-4 border-l-4 border-red-800 pl-3">金價走勢圖</h2>
             <div class="h-64 relative">
-               <div v-if="loading" class="absolute inset-0 flex items-center justify-center bg-white/80 z-10"><i class="fas fa-spinner fa-spin text-red-800 text-2xl mr-2"></i> 載入數據中...</div>
-               <div v-if="!loading && (!rawChartData || rawChartData.length === 0)" class="absolute inset-0 flex items-center justify-center text-gray-400">暫無歷史走勢數據</div>
+               <div v-if="loading" class="absolute inset-0 flex items-center justify-center bg-white/80 z-10 text-gray-400">
+                   <i class="fas fa-chart-line text-2xl mr-2"></i> 讀取最新走勢中...
+               </div>
                <canvas id="mainChart"></canvas>
             </div>
           </section>
@@ -184,15 +115,7 @@
              <div class="overflow-x-auto max-h-[600px] overflow-y-auto">
                <table class="w-full min-w-[700px]">
                  <thead class="sticky top-0 z-10 shadow-sm">
-                   <tr>
-                     <th class="table-header">日期</th>
-                     <th class="table-header bg-yellow-50 text-yellow-900">黃金(收)</th>
-                     <th class="table-header bg-yellow-50 text-yellow-900">黃金(賣)</th>
-                     <th class="table-header">鉑金(收)</th>
-                     <th class="table-header">鉑金(賣)</th>
-                     <th class="table-header">白銀(收)</th>
-                     <th class="table-header">白銀(賣)</th>
-                   </tr>
+                   <tr><th class="table-header">日期</th><th class="table-header bg-yellow-50 text-yellow-900">黃金(收)</th><th class="table-header bg-yellow-50 text-yellow-900">黃金(賣)</th><th class="table-header">鉑金(收)</th><th class="table-header">鉑金(賣)</th><th class="table-header">白銀(收)</th><th class="table-header">白銀(賣)</th></tr>
                  </thead>
                  <tbody>
                    <tr v-for="(row, i) in visibleDailyData" :key="i" class="hover:bg-gray-50 transition-colors">
@@ -207,11 +130,7 @@
                  </tbody>
                </table>
              </div>
-             <div v-if="dailyData.length > visibleQuoteCount" class="p-4 text-center bg-gray-50 border-t border-gray-100">
-                <button @click="loadMoreQuotes" class="text-sm font-bold text-gray-600 hover:text-red-800 bg-white border border-gray-300 hover:border-red-800 px-6 py-2 rounded-full shadow-sm transition-all duration-300">
-                    <i class="fas fa-history mr-2"></i>瀏覽更多歷史報價 ({{ visibleQuoteCount }} / {{ dailyData.length }})
-                </button>
-             </div>
+             <div v-if="dailyData.length > visibleQuoteCount" class="p-4 text-center bg-gray-50 border-t border-gray-100"><button @click="loadMoreQuotes" class="text-sm font-bold text-gray-600 hover:text-red-800 bg-white border border-gray-300 hover:border-red-800 px-6 py-2 rounded-full shadow-sm transition-all duration-300"><i class="fas fa-history mr-2"></i>瀏覽更多歷史報價</button></div>
           </section>
 
           <div class="lg:hidden space-y-6 mb-8">
@@ -223,33 +142,16 @@
                  <div class="bg-red-50 p-4 m-4 rounded-xl border border-red-100">
                    <div class="flex justify-between text-sm mb-2 font-bold text-red-800"><span>黃金 (24K)</span> <i class="fas fa-crown text-amber-500"></i></div>
                    <div class="flex justify-between">
-                      <div class="text-center w-1/2 border-r border-red-200">
-                          <div class="text-xs text-gray-500">回收(Buy)</div>
-                          <div class="text-2xl font-bold text-green-600">{{ formatPrice(rates['24K'].buy) }}</div>
-                          <div class="text-xs" v-html="formatDiff(rates['24K'].buyDiff)"></div>
-                      </div>
-                      <div class="text-center w-1/2">
-                          <div class="text-xs text-gray-500">賣出(Sell)</div>
-                          <div class="text-xl font-bold text-blue-600">{{ formatPrice(rates['24K'].sell) }}</div>
-                          <div class="text-xs" v-html="formatDiff(rates['24K'].sellDiff)"></div>
-                      </div>
+                      <div class="text-center w-1/2 border-r border-red-200"><div class="text-xs text-gray-500">回收(Buy)</div><div class="text-2xl font-bold text-green-600">{{ formatPrice(rates['24K'].buy) }}</div><div class="text-xs" v-html="formatDiff(rates['24K'].buyDiff)"></div></div>
+                      <div class="text-center w-1/2"><div class="text-xs text-gray-500">賣出(Sell)</div><div class="text-xl font-bold text-blue-600">{{ formatPrice(rates['24K'].sell) }}</div><div class="text-xs" v-html="formatDiff(rates['24K'].sellDiff)"></div></div>
                    </div>
                  </div>
               </div>
-
               <div id="calculator-section-mobile" class="bg-gray-900 p-5 text-white rounded-2xl shadow-xl">
-               <div class="flex justify-between items-center mb-4">
-                  <h4 class="font-bold text-amber-400 flex items-center gap-2"><i class="fas fa-calculator"></i> 黃金回收試算</h4>
-                  <button @click="toggleCalcUnit" class="text-base font-bold bg-yellow-400 text-gray-900 px-4 py-2 rounded-lg shadow-lg hover:bg-yellow-300 transition transform active:scale-95 border-2 border-yellow-500">單位: {{ calcUnit === 'qian' ? '台錢' : '公克'}}</button>
-               </div>
+               <div class="flex justify-between items-center mb-4"><h4 class="font-bold text-amber-400 flex items-center gap-2"><i class="fas fa-calculator"></i> 黃金回收試算</h4><button @click="toggleCalcUnit" class="text-base font-bold bg-yellow-400 text-gray-900 px-4 py-2 rounded-lg shadow-lg hover:bg-yellow-300 transition transform active:scale-95 border-2 border-yellow-500">單位: {{ calcUnit === 'qian' ? '台錢' : '公克'}}</button></div>
                <div class="space-y-3">
-                 <div class="flex gap-2">
-                   <select v-model="calcMetal" class="bg-gray-800 border-gray-700 rounded p-3 text-base w-1/3 outline-none" aria-label="選擇金屬類型"><option value="24K">24K</option><option value="18K">18K</option><option value="Pt">鉑金</option></select>
-                   <input type="number" v-model="calcWeight" class="w-full bg-gray-800 border-gray-700 rounded p-3 text-base text-right font-nums outline-none" placeholder="輸入重量" aria-label="輸入重量">
-                 </div>
-                 <div class="flex justify-between items-center bg-gray-800/50 p-3 rounded border border-gray-700">
-                   <span class="text-sm text-gray-400">預估價值</span><span class="text-2xl font-bold text-amber-400">$ {{ calculateTotal }}</span>
-                 </div>
+                 <div class="flex gap-2"><select v-model="calcMetal" class="bg-gray-800 border-gray-700 rounded p-3 text-base w-1/3 outline-none" aria-label="選擇金屬類型"><option value="24K">24K</option><option value="18K">18K</option><option value="Pt">鉑金</option></select><input type="number" v-model="calcWeight" class="w-full bg-gray-800 border-gray-700 rounded p-3 text-base text-right font-nums outline-none" placeholder="輸入重量" aria-label="輸入重量"></div>
+                 <div class="flex justify-between items-center bg-gray-800/50 p-3 rounded border border-gray-700"><span class="text-sm text-gray-400">預估價值</span><span class="text-2xl font-bold text-amber-400">$ {{ calculateTotal }}</span></div>
                  <button v-if="calcWeight && calculateTotal !== '0'" @click="bookNow" class="w-full bg-green-500 text-white font-bold py-3 rounded text-base hover:bg-green-600 shadow-lg flex items-center justify-center gap-2 animate-pulse"><i class="fab fa-line text-xl"></i> 用此價格預約賣出</button>
                  <button v-else class="w-full bg-amber-500 text-gray-900 font-bold py-3 rounded text-base hover:bg-amber-400 shadow-lg">立即致電鎖價</button>
                </div>
@@ -267,21 +169,12 @@
           </section>
 
           <section id="blog-section">
-            <div class="flex justify-between items-end mb-6">
-                <h2 class="text-2xl font-bold text-gray-800 border-l-4 border-red-800 pl-3">📚 黃金回收知識專欄</h2>
-            </div>
+            <div class="flex justify-between items-end mb-6"><h2 class="text-2xl font-bold text-gray-800 border-l-4 border-red-800 pl-3">📚 黃金回收知識專欄</h2></div>
             <div class="grid md:grid-cols-2 gap-6" :class="{ 'interaction-disabled': !canClick }">
                <div v-for="article in visibleArticles" :key="article.id" class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden hover:shadow-md transition cursor-default group">
                   <div class="h-48 bg-gray-200 relative overflow-hidden cursor-pointer" @click.stop="openArticle(article, $event)">
                      <div class="absolute inset-0 flex items-center justify-center text-gray-400"><i class="fas fa-image text-3xl"></i></div>
-                     <img :src="getOptimizedUrl(article.image, 400)" 
-                          loading="lazy"
-                          width="400" height="250"
-                          class="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" 
-                          :class="article.imgLoaded ? 'opacity-100' : 'opacity-0'" 
-                          @load="article.imgLoaded = true" 
-                          @error="article.imgLoaded = false" 
-                          :alt="article.title || '文章圖片'">
+                     <img :src="getOptimizedUrl(article.image, 400)" loading="lazy" width="400" height="250" class="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" :class="article.imgLoaded ? 'opacity-100' : 'opacity-0'" @load="article.imgLoaded = true" @error="article.imgLoaded = false" :alt="article.title || '文章圖片'">
                      <div class="absolute top-0 right-0 bg-red-800 text-white text-xs font-bold px-3 py-1 rounded-bl-lg">{{ article.date }}</div>
                   </div>
                   <div class="p-5">
@@ -311,38 +204,20 @@
                  <div class="bg-red-50 p-4 m-4 rounded-xl border border-red-100">
                    <div class="flex justify-between text-sm mb-2 font-bold text-red-800"><span>黃金 (24K)</span> <i class="fas fa-crown text-amber-500"></i></div>
                    <div class="flex justify-between">
-                      <div class="text-center w-1/2 border-r border-red-200">
-                          <div class="text-xs text-gray-500">回收(Buy)</div>
-                          <div class="text-2xl font-bold text-green-600">{{ formatPrice(rates['24K'].buy) }}</div>
-                          <div class="text-xs" v-html="formatDiff(rates['24K'].buyDiff)"></div>
-                      </div>
-                      <div class="text-center w-1/2">
-                          <div class="text-xs text-gray-500">賣出(Sell)</div>
-                          <div class="text-xl font-bold text-blue-600">{{ formatPrice(rates['24K'].sell) }}</div>
-                          <div class="text-xs" v-html="formatDiff(rates['24K'].sellDiff)"></div>
-                      </div>
+                      <div class="text-center w-1/2 border-r border-red-200"><div class="text-xs text-gray-500">回收(Buy)</div><div class="text-2xl font-bold text-green-600">{{ formatPrice(rates['24K'].buy) }}</div><div class="text-xs" v-html="formatDiff(rates['24K'].buyDiff)"></div></div>
+                      <div class="text-center w-1/2"><div class="text-xs text-gray-500">賣出(Sell)</div><div class="text-xl font-bold text-blue-600">{{ formatPrice(rates['24K'].sell) }}</div><div class="text-xs" v-html="formatDiff(rates['24K'].sellDiff)"></div></div>
                    </div>
                  </div>
               </div>
-
               <div id="calculator-section-desktop" class="bg-gray-900 p-5 text-white rounded-2xl shadow-xl">
-                 <div class="flex justify-between items-center mb-4">
-                    <h4 class="font-bold text-amber-400 flex items-center gap-2"><i class="fas fa-calculator"></i> 黃金回收試算</h4>
-                    <button @click="toggleCalcUnit" class="text-base font-bold bg-yellow-400 text-gray-900 px-4 py-2 rounded-lg shadow-lg hover:bg-yellow-300 transition transform active:scale-95 border-2 border-yellow-500">單位: {{ calcUnit === 'qian' ? '台錢' : '公克'}}</button>
-                 </div>
+                 <div class="flex justify-between items-center mb-4"><h4 class="font-bold text-amber-400 flex items-center gap-2"><i class="fas fa-calculator"></i> 黃金回收試算</h4><button @click="toggleCalcUnit" class="text-base font-bold bg-yellow-400 text-gray-900 px-4 py-2 rounded-lg shadow-lg hover:bg-yellow-300 transition transform active:scale-95 border-2 border-yellow-500">單位: {{ calcUnit === 'qian' ? '台錢' : '公克'}}</button></div>
                  <div class="space-y-3">
-                   <div class="flex gap-2">
-                     <select v-model="calcMetal" class="bg-gray-800 border-gray-700 rounded p-3 text-base w-1/3 outline-none" aria-label="選擇金屬類型"><option value="24K">24K</option><option value="18K">18K</option><option value="Pt">鉑金</option></select>
-                     <input type="number" v-model="calcWeight" class="w-full bg-gray-800 border-gray-700 rounded p-3 text-base text-right font-nums outline-none" placeholder="輸入重量" aria-label="輸入重量">
-                   </div>
-                   <div class="flex justify-between items-center bg-gray-800/50 p-3 rounded border border-gray-700">
-                     <span class="text-sm text-gray-400">預估價值</span><span class="text-2xl font-bold text-amber-400">$ {{ calculateTotal }}</span>
-                   </div>
+                   <div class="flex gap-2"><select v-model="calcMetal" class="bg-gray-800 border-gray-700 rounded p-3 text-base w-1/3 outline-none" aria-label="選擇金屬類型"><option value="24K">24K</option><option value="18K">18K</option><option value="Pt">鉑金</option></select><input type="number" v-model="calcWeight" class="w-full bg-gray-800 border-gray-700 rounded p-3 text-base text-right font-nums outline-none" placeholder="輸入重量" aria-label="輸入重量"></div>
+                   <div class="flex justify-between items-center bg-gray-800/50 p-3 rounded border border-gray-700"><span class="text-sm text-gray-400">預估價值</span><span class="text-2xl font-bold text-amber-400">$ {{ calculateTotal }}</span></div>
                    <button v-if="calcWeight && calculateTotal !== '0'" @click="bookNow" class="w-full bg-green-500 text-white font-bold py-3 rounded text-base hover:bg-green-600 shadow-lg flex items-center justify-center gap-2 animate-pulse"><i class="fab fa-line text-xl"></i> 用此價格預約賣出</button>
                    <button v-else class="w-full bg-amber-500 text-gray-900 font-bold py-3 rounded text-base hover:bg-amber-400 shadow-lg">立即致電鎖價</button>
                  </div>
               </div>
-
               <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
                 <h3 class="font-bold text-gray-800 mb-4 border-l-4 border-red-800 pl-2">聯絡我們</h3>
                 <div class="space-y-4 text-sm text-gray-700">
@@ -382,7 +257,6 @@
   </div>
 
   <script>
-    // 延遲載入 Chart.js
     window.addEventListener('load', () => {
         const script = document.createElement('script');
         script.src = 'https://cdn.jsdelivr.net/npm/chart.js';
@@ -396,7 +270,7 @@
     const GAS_API_URL = 'https://script.google.com/macros/s/AKfycbygJxxjK_2wd3hUB-M0XjU3SxusAWPpW99EPPqBIJjMrLWItT-4LHxSzYFatLQ-RvC9Qg/exec';
     
     const CACHE_KEY = 'gold_price_cache';
-    const CACHE_DURATION = 1000 * 60 * 30; 
+    const CACHE_DURATION = 1000 * 60 * 60; // 改為 1 小時快取
 
     createApp({
       data() {
@@ -404,11 +278,13 @@
           view: 'home', 
           currentArticle: null,
           currentImgLoaded: false, 
-          // 資料預設值 (Hardcoded for LCP)
-          heroImages: [], 
-          updateTime: '最新即時報價', 
-          rates: { '24K': {buy: 16141, sell: 16571, buyDiff: 0, sellDiff: 0}, '18K': {buy: 12105, sell: 0}, 'Pt': {buy: 6311, sell: 7291}, 'Ag': {buy999: 57717, sell999: 69539} },
-          currentHeroIndex: 0, unit: 'qian', loading: false,
+          // 煙霧彈 1: 預填圖片
+          heroImages: ['https://wsrv.nl/?url=https://drive.google.com/uc?id=1ASz1v5ZBQ-WV572r-BC4gZRuraywgKKv&w=1200&output=webp&q=75'], 
+          // 煙霧彈 2: 提示文字
+          updateTime: '連線即時盤價中...', 
+          // 煙霧彈 3: 保底數據
+          rates: { '24K': {buy: 16140, sell: 16570, buyDiff: 0, sellDiff: 0}, '18K': {buy: 12100, sell: 0}, 'Pt': {buy: 6300, sell: 7200}, 'Ag': {buy999: 57700, sell999: 69500} },
+          currentHeroIndex: 0, unit: 'qian', loading: false, // 煙霧彈 4: 預設不 loading
           calcUnit: 'qian', calcMetal: '24K', calcWeight: '',
           dailyData: [], rawChartData: [], chartLabels: [], chartInstance: null,
           articles: [], faqList: [],
@@ -418,6 +294,12 @@
       computed: {
         unitText() { return this.unit === 'qian' ? '台錢' : '公克'; },
         silverUnitText() { return this.unit === 'qian' ? '公斤' : '公克'; },
+        currentHeroUrl() {
+            if(!this.heroImages || this.heroImages.length === 0) return '';
+            const url = this.heroImages[this.currentHeroIndex];
+            if(url.includes('wsrv.nl')) return url;
+            return this.getOptimizedUrl(url, 1200);
+        },
         calculateTotal() {
           if(!this.calcWeight) return 0;
           let rawPrice = 0;
@@ -504,30 +386,24 @@
            this.currentImgLoaded = false; this.view = 'article';
            window.history.pushState({}, '', '?p=article&id=' + article.id); window.scrollTo(0, 0);
         },
-        unlockBody() {
-            window.scrollTo(0, 0); document.body.classList.remove('locked');
-            const mask = document.getElementById('loading-mask'); if(mask) mask.style.display = 'none';
-            setTimeout(() => { this.canClick = true; }, 100);
-        },
         updateChartOnUnitChange() { if(this.rawChartData && this.rawChartData.length > 0 && this.view === 'home') { this.initChart(this.chartLabels, this.rawChartData); } },
         
         async fetchData() {
+            // 本地快取邏輯
             const cached = localStorage.getItem(CACHE_KEY);
             if (cached) {
-                const { data, timestamp } = JSON.parse(cached);
-                if (Date.now() - timestamp < CACHE_DURATION) {
-                    this.applyData(data);
-                    this.unlockBody();
-                    return; 
-                }
+                try {
+                    const parsed = JSON.parse(cached);
+                    if (Date.now() - parsed.timestamp < CACHE_DURATION) {
+                        this.applyData(parsed.data);
+                    }
+                } catch(e) {}
             }
-            this.unlockBody(); 
 
             try {
                 const initRes = await fetch(GAS_API_URL + '?action=getInitData');
                 const initData = await initRes.json();
                 
-                this.loading = true;
                 const chartRes = await fetch(GAS_API_URL + '?action=getChartData');
                 const chartData = await chartRes.json();
                 
@@ -535,6 +411,7 @@
                 const articleList = await articleRes.json();
 
                 const fullData = { initData, chartData, articleList };
+                
                 localStorage.setItem(CACHE_KEY, JSON.stringify({ timestamp: Date.now(), data: fullData }));
                 this.applyData(fullData);
 
@@ -554,14 +431,13 @@
             }
             if(initData.faq) this.faqList = initData.faq;
 
-            this.loading = false;
             if(chartData.dailyTable) this.dailyData = chartData.dailyTable;
             if(chartData.chart) { 
                 this.rawChartData = chartData.chart.data; 
                 this.chartLabels = chartData.chart.labels;
                 setTimeout(() => {
                     if(this.view === 'home') this.initChart(this.chartLabels, this.rawChartData);
-                }, 500); 
+                }, 100); 
             }
 
             this.articles = (articleList || []).map(a => ({ 
@@ -582,4 +458,3 @@
   </script>
 </body>
 </html>
-
